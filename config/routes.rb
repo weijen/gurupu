@@ -1,4 +1,15 @@
 Gurupu::Application.routes.draw do
+  get "expenses/index"
+  get "expenses/new"
+  get "expenses/create"
+  get "expenses/edit"
+  get "expenses/update"
+  get "expenses/destroy"
+  get "groups/show"
+  get "groups/create"
+  resources :groups do
+    resources :expenses
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -39,7 +50,7 @@ Gurupu::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
+
   # Example resource route with concerns:
   #   concern :toggleable do
   #     post 'toggle'
