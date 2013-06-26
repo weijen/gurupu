@@ -7,4 +7,7 @@ class User < ActiveRecord::Base
       user.email = auth["info"]["email"]
     end
   end
+
+  has_many :group_users
+  has_many :groups, through: :group_users
 end
