@@ -10,7 +10,8 @@ class GroupsController < ApplicationController
   end
 
   def create
-    @group.new(group_params)
+    @group = Group.new(group_params)
+    @group.cost = 'active'
     if @group.save
       redirect_to @group
     else
@@ -41,7 +42,7 @@ class GroupsController < ApplicationController
 
   private
   def set_group
-    @group = Group.where(secret_str: params[:id])
+    @group = Group.where(slug: params[:id])
   end
 
   def group_params
