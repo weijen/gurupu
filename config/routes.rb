@@ -1,4 +1,7 @@
 Gurupu::Application.routes.draw do
+  get "/auth/:provider/callback" => "sessions#create"
+  get "/signout" => "sessions#destroy", :as => :signout
+  get "/login" => "sessions#index" 
   resources :groups do
     resources :expenses
   end
