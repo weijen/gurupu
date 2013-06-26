@@ -8,6 +8,9 @@ class User < ActiveRecord::Base
     end
   end
 
+  validates :uid, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: true
+
   has_many :group_users
   has_many :groups, through: :group_users
 end

@@ -42,7 +42,7 @@ class GroupsController < ApplicationController
 
   private
   def set_group
-    @group = Group.where(slug: params[:id])
+    @group = Group.find_by_slug(params[:id])
   end
 
   def group_params

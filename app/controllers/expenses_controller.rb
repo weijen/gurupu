@@ -34,11 +34,11 @@ class ExpensesController < ApplicationController
 
   private
   def set_group
-    @group = Group.where(slug: params[:group_id])
+    @group = Group.find_by_slug(slug: params[:group_id])
   end
 
   def set_expense
-    @expense = Expense.find(params[:id])
+    @expense = Expense.find_by_slug(params[:id])
   end
 
   def expense_params

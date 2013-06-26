@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130626131748) do
+ActiveRecord::Schema.define(version: 20130626151141) do
 
   create_table "expenses", force: true do |t|
     t.string   "name"
@@ -20,6 +20,10 @@ ActiveRecord::Schema.define(version: 20130626131748) do
     t.string   "slug"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "description"
+    t.datetime "date"
+    t.integer  "group_id"
+    t.integer  "user_id"
   end
 
   create_table "group_tags", force: true do |t|
@@ -27,6 +31,7 @@ ActiveRecord::Schema.define(version: 20130626131748) do
     t.integer  "tag_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_default"
   end
 
   create_table "group_users", force: true do |t|
@@ -34,6 +39,8 @@ ActiveRecord::Schema.define(version: 20130626131748) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "role"
+    t.string   "state"
   end
 
   create_table "groups", force: true do |t|

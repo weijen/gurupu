@@ -7,4 +7,8 @@ class Group < ActiveRecord::Base
   has_many :tags, through: :group_tags
   has_many :group_users
   has_many :users, through: :group_users
+
+  def to_param
+    slug
+  end
 end

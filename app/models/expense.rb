@@ -5,4 +5,8 @@ class Expense < ActiveRecord::Base
 
   validates :name, presence: true
   validates :cost, numericality: { greater_than: 0 }
+
+  def to_param
+    slug
+  end
 end
