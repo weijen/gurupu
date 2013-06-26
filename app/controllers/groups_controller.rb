@@ -32,10 +32,12 @@ class GroupsController < ApplicationController
     end
   end
 
+=begin
   def destroy
     @group.destroy
     redirect_to groups_path
   end
+=end
 
   private
   def set_group

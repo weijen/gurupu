@@ -32,7 +32,6 @@ ActiveRecord::Schema.define(version: 20130624124602) do
   create_table "groups", force: true do |t|
     t.string   "name"
     t.string   "description"
-    t.integer  "owner_id"
     t.string   "slug"
     t.datetime "created_at"
     t.datetime "updated_at"

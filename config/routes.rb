@@ -1,12 +1,4 @@
 Gurupu::Application.routes.draw do
-  get "expenses/index"
-  get "expenses/new"
-  get "expenses/create"
-  get "expenses/edit"
-  get "expenses/update"
-  get "expenses/destroy"
-  get "groups/show"
-  get "groups/create"
   resources :groups do
     resources :expenses
   end

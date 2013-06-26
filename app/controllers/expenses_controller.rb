@@ -4,11 +4,11 @@ class ExpensesController < ApplicationController
   end
 
   def new
-    @expense = @group.build_expense
+    @expense = @group.expenses.build
   end
 
   def create
-    @expense = @group.build_expense(expense_params)
+    @expense = @group.expenses.build(expense_params)
     if @expense.save
       redirect_to group_expenses_path
     else
@@ -29,12 +29,12 @@ class ExpensesController < ApplicationController
 
   def destroy
     @expense.destroy
-    redirect_to expenses_path
+    redirect_to group_expenses_path
   end
 
   private
   def set_group
-    @group = Group.where(secret_str: params[:group_id])
+    @group = Group.where(slug: params[:group_id])
   end
 
   def set_expense
