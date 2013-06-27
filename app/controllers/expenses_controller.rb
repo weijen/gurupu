@@ -34,7 +34,7 @@ class ExpensesController < ApplicationController
 
   private
   def set_group
-    @group = Group.find_by_slug(slug: params[:group_id])
+    @group = Group.find_by_slug(params[:group_id])
   end
 
   def set_expense
@@ -42,7 +42,7 @@ class ExpensesController < ApplicationController
   end
 
   def expense_params
-    params.require(:expense).permit(:name, :cost)
+    params.require(:expense).permit(:name, :description, :cost, :date, :tag_id)
   end
 
 end

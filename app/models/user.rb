@@ -13,4 +13,16 @@ class User < ActiveRecord::Base
 
   has_many :group_users
   has_many :groups, through: :group_users
+
+  def join!(group)
+    groups << group
+  end
+
+  def quit!(group)
+    groups.delete(group)
+  end
+
+  def is_member_of?(group)
+    groups.include?(group)
+  end
 end
