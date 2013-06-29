@@ -28,7 +28,7 @@
           <td><%= link_to 'Link', group_expenses_path(g.slug) %>
           </td>        
           <td>
-            <% if g.group_users.find_by_user_id(@current_user.id).role=='admin' %>
+            <% if g.group_users.find_by_user_id(current_user.id).role=='admin' %>
               <%= link_to "管理", edit_group_path(g.slug) %></td>  
             <% end %>             
           </td>        
