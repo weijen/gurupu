@@ -1,1 +1,45 @@
-<h1>Group#index</h1>
+<!-- user not join any group yet -->
+<% if @groups.count==0 %>
+  <%= link_to(new_group_path, :class => "btn btn-info btn-large" ) do  %>
+    建立新團
+  <% end %> 
+<!-- user had groups -->  
+<% else %>  
+  <h3>
+    <font color="palevioletred">
+      參加的團體
+    </font>
+  <h3>
+
+  <table class="table table-hover" width:100%>    
+    <thead>   
+      <tr>
+        <th>團名</th>
+        <th>敘述</th>
+        <th>瀏覽</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>       
+      <% @groups.each do |g| %>
+        <tr>
+          <td><%= g.name %></td>
+          <td><%= g.description %></td>   
+          <td><%= link_to 'Link', group_expenses_path(g.slug) %>
+          </td>        
+          <td>
+            <% if g.group_users.find_by_user_id(@current_user.id).role=='admin' %>
+              <%= link_to "管理", edit_group_path(g.slug) %></td>  
+            <% end %>             
+          </td>        
+        </tr>
+      <% end %>   
+    </tbody>
+  </table>  
+
+  <%= link_to(new_group_path, :class => "btn btn-info" ) do  %>
+    建立新團
+  <% end %> 
+<% end %> 
+
+

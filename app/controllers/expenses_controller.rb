@@ -1,4 +1,6 @@
 class ExpensesController < ApplicationController
+  before_action :set_group #maca
+
   def index
     @expenses = @group.expenses
   end
