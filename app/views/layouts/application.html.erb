@@ -13,7 +13,13 @@
 				<h1>團體記帳 GURUPU</h1>
       </div>
       <div class="span4">
-      	<!-- log in/log out -->
+      	<% if current_user %>
+          <%= current_user.name %>
+          <%= link_to "Sign Out", signout_path %>
+        <% else %>
+          <%= link_to "Sign in", "/auth/facebook" %>
+        <% end %>
+      <!-- log in/log out -->
       </div>
     </div>		
 	</div>
