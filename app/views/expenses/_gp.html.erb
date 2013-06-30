@@ -1,0 +1,33 @@
+<h4><font>
+  <div class="row">
+    <div class="span1">
+    </div>    
+    <div class="span6">
+      團體名稱: <%= @group.name%> 
+      <br>
+      描述: <%= @group.description%> 
+      <% if @user_status=="" %>
+        <br><br>      
+        <button class="btn btn-info" type="button">申請加入此團</button>
+      <% elsif @user_status=="wait" %>
+        <br><br>      
+        <font color="palevioletred"> 團員身份: 待管理員審核 </font>
+      <% end %>        
+    </div>
+    <div class="span5">
+      <% if @user_status=="joined" %>
+        狀態: <%= @group.state %>            
+        <br>
+        <div class="input-append">
+          <button class="btn" type="button"> <%=link_to '帳目', action:'index'%> </button>
+          <button class="btn" type="button"> <%=link_to '報帳', action:'new'%> </button>
+          <button class="btn" type="button"> <%=link_to '報表', action:'summary'%> </button>      
+        </div>               
+      <% end %>         
+    </div>     
+  </div>  
+</font></h4>
+
+
+
+

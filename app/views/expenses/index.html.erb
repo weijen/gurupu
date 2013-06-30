@@ -1,2 +1,30 @@
-<h1>Expenses#index</h1>
-<p>Find me in app/views/expenses/index.html.erb</p>
+<%= render 'gp' %>
+<% if @user_status=="joined" %>
+  <table class="table table-hover" width:100%>    
+    <thead>   
+      <tr>
+        <th>分類</th>
+        <th>項目</th>
+        <th>日期</th>
+        <th>團員</th>
+        <th>金額</th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>     
+      <% @expenses.each do |e| %>
+        <tr>
+          <td> <%= Tag.find(e.tag_id).name %> </td>
+          <td> <%= e.name %> </td>
+          <td> <%= e.date.strftime "%Y-%m-%d" %> </td>
+          <td> <%= User.find(e.user_id).name %> </td>
+          <td> <%= e.cost %> </td>
+          <td> <%=link_to 'update', action:'edit', id: e%> </td>
+          <td> <%=link_to 'delete', action:'destroy', method: :delete, id: e %> </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>  
+<% end %> 

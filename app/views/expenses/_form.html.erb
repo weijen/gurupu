@@ -1,5 +1,11 @@
 <%= simple_form_for [@group, @expense] do |f| %>
+  <%= f.input :date %>
+  <%= f.input :tag_id do %>
+	  <%= f.select :tag_id, @group_sel_tag.map { |r| [r.name, r.id] } %>
+  <% end %>  
   <%= f.input :name %>
-  <%= f.input :cost %>
+  <%= f.input :description %>    
+  <%= f.input :cost %>  
   <%= f.button :submit %>
 <% end %>
+

@@ -1,0 +1,25 @@
+<%= render 'gp' %>
+<% if @user_status=="joined" %>
+	<div class="row">
+	  <div class="span6">
+	  	<table class="table table-bordered"> 
+				<tr>
+		      <th>分類</th>
+		      <th>金額</th>
+		      <th>佔比%</th>
+		    </tr>   
+				<% @ex_sum.each do |ex| %>	    
+			    <tr>
+			      <td> <%= Tag.find(ex.tag_id).name %> </td>
+			      <td> <%= ex.costs %> </td>
+			      <td> <%= (ex.costs*100.to_f/@total_cost).round(2) %> </td>
+			    </tr>
+			  <% end %>
+			</table>
+	  </div>
+	  <div class="span6">
+			<!-- Pie chart not ready! --> 
+	  </div>
+	</div>		
+<% end %> 	
+

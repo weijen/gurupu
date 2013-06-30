@@ -1,2 +1,4 @@
-<h1>Expenses#edit</h1>
-<%= render 'form' %>
+<%= render 'gp' %>
+<% if @user_status=="joined" %>
+	<%= render 'form' %>
+<% end %> 

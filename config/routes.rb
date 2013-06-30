@@ -3,7 +3,11 @@ Gurupu::Application.routes.draw do
   get "/signout" => "sessions#destroy", :as => :signout
   get "/login" => "sessions#index" 
   resources :groups do
-    resources :expenses
+    resources :expenses do
+      collection do 
+        get :summary
+      end
+    end
   end
   get "welcome/index"  
   root :to => 'welcome#index'  
