@@ -69,10 +69,6 @@ class ExpensesController < ApplicationController
       render action: 'none'
     end
   end
-
-  def select_tag
-    @group_sel_tag = Tag.all.where(is_default: true)+ @group.tags.where(is_default: false)    
-  end
   #maca add end  
 
   def set_group

@@ -14,4 +14,12 @@ class ApplicationController < ActionController::Base
     return !session[:user_id].nil?
   end
 
+  #maca add start
+  def select_tag
+    @group_sel_tag = Tag.all.where(is_default: true)
+    if @group != nil
+     @group_sel_tag += @group.tags.where(is_default: false)    
+    end
+  end
+  #maca add end
 end

@@ -1,5 +1,26 @@
-<%= simple_form_for @group do |f| %>
-  <%= f.input :name %>
-  <%= f.input :description %>
-  <%= f.button :submit %>
+<%= simple_form_for @group do |g| %>
+  <%= g.input :name,input_html: {class: "span4"},label: "團體名稱" %>  
+  <%= g.input :description,input_html: {class: "span9"},label: "描述" %>  
+
+  類別:
+  <% @group_sel_tag.each do |tag| %>    
+    <%= check_box_tag 'tag_ids[]', tag.id, 
+        GroupTag.find_by_group_id_and_tag_id(@group.id,tag.id) %>
+    <%= tag.name %>
+  <% end %>
+  <br><br>
+
+  <% if controller.action_name == "new" %>
+    <%= g.button :submit ,"建立新團", class: "btn btn-success" %>
+  <% else %>      
+    <%= g.button :submit ,"確認修改", class: "btn btn-warning" %>
+  <% end %>    
 <% end %>
+
+
+
+
+
+
+
+

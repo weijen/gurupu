@@ -26,5 +26,16 @@ class Group < ActiveRecord::Base
   def set_state_active
     self[:state] = 'active'
   end
+  
+  #maca add start
+  def change_state
+    if self[:state] == 'frozen' 
+      self[:state] = 'active' 
+    else
+      self[:state] = 'frozen' 
+    end
+    self.save    
+  end
+  #maca add end
 
 end
