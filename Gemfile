@@ -31,9 +31,14 @@ gem 'jbuilder', '~> 1.2'
 gem 'simple_form'
 gem 'anjlab-bootstrap-rails', '>= 2.3', :require => 'bootstrap-rails'
 
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
+end
+
+group :development do
+  gem 'annotate'
 end
 
 # Use ActiveModel has_secure_password
