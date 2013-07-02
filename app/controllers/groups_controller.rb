@@ -1,7 +1,10 @@
 class GroupsController < ApplicationController
   #maca before_action :set_group, only: [:show, :edit, :update, :destroy]
-  prepend_before_action :set_group, except: [:new, :create] #maca 
-  before_action :select_tag, only: [:new, :edit, :index]    #maca 
+  #maca start
+  prepend_before_action :flash_clear 
+  prepend_before_action :set_group, except: [:new, :create] 
+  before_action :select_tag, only: [:new, :edit, :index]    
+  #maca add end
 
   def index
     @groups=current_user.groups #maca
@@ -21,7 +24,7 @@ class GroupsController < ApplicationController
       end
     elsif params[:var]=="kick"
       (params[:group_user_ids] || []).each do |i| 
-        GroupUser.find(i).change_state('kick')
+        GroupUser.find(i).delete
       end
     elsif params[:var]=="own"
       old_owner=@group.group_users.where(role: 'admin')
@@ -52,6 +55,12 @@ class GroupsController < ApplicationController
     end
     redirect_to edit_group_path
   end
+  
+  def join_group
+    @group.add_member(current_user) 
+    redirect_to :back
+  end
+  	  
 	#maca add end
 	
   def new
@@ -103,6 +112,15 @@ class GroupsController < ApplicationController
 =end
 
   private
+  #maca add start
+  def select_tag
+    @group_sel_tag = Tag.all.where(is_default: true)  
+    if @group != nil
+      @group_sel_tag += @group.tags.where(is_default: false)
+    end
+  end
+  #maca add end
+
   def set_group
     @group = Group.find_by_slug(params[:id])
   end

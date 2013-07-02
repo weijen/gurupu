@@ -1,5 +1,6 @@
 <% gp_status = { active: "活動中", frozen: "凍結報帳" } %>
 
+<% if @group.owner.include?(current_user) %>
 <font size=4>
   <!--Group-->  
   團體狀態: 
@@ -79,3 +80,5 @@
     <%= g.button :submit ,"確認", class: "btn btn-warning" %>
   <% end %>
 
+</font>
+<% end %> 

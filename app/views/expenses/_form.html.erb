@@ -1,7 +1,7 @@
 <%= simple_form_for [@group, @expense] do |f| %>
-  <%= f.input :date %>
+  <%= f.input :date , as: :date%>
   <%= f.input :tag_id do %>
-	  <%= f.select :tag_id, @group_sel_tag.map { |r| [r.name, r.id] } %>
+	  <%= f.select :tag_id, @group.tags.map { |r| [r.name, r.id] } %>
   <% end %>  
   <%= f.input :name %>
   <%= f.input :description %>    

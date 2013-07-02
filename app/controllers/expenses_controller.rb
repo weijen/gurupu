@@ -1,8 +1,7 @@
 class ExpensesController < ApplicationController
   #maca add start
-  prepend_before_action :check_join
+  prepend_before_action :check_join, :flash_clear
   before_action :set_expense, only: [:edit, :update, :destroy, :show] 
-  before_action :select_tag, only: [:new, :edit] 
   #maca add end
 
   def index
