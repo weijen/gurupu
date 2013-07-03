@@ -122,7 +122,7 @@ class GroupsController < ApplicationController
 =end
   def invite
    GroupMailer.invite(current_user, @group,params[:mailto]).deliver 
-   redirect_to edit_group_path, :notice => "mailed"
+   redirect_to edit_group_path, :notice => "mailed:" + params[:mailto]
   end
 
   private
