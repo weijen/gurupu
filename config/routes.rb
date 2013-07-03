@@ -1,23 +1,19 @@
 Gurupu::Application.routes.draw do
   get "/auth/:provider/callback" => "sessions#create"
   get "/signout" => "sessions#destroy", :as => :signout
-  get "/login" => "sessions#index" 
+  get "/login" => "sessions#index"
   resources :groups do
-    member do
-      put :state_change
-      put :user_maintain
-      put :add_tag
-      put :join_group   
-      post :invite
-    end    
+    resource :state, only: [:create, :delete]
+    resources :users
+    resources :tags, except: [:index]
     resources :expenses do
-      collection do 
+      collection do
         get :summary
       end
     end
   end
-  get "welcome/index"  
-  root :to => 'welcome#index'  
+  get "welcome/index"
+  root :to => 'welcome#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

@@ -5,7 +5,6 @@ class GroupsController < ApplicationController
 
   def index
     @groups=current_user.groups #maca
-    #maca @groups = Group.all
   end
 
 	#maca add start
@@ -15,26 +14,26 @@ class GroupsController < ApplicationController
   end
 
   def user_maintain
-    if params[:var]=="add"      
-      (params[:group_user_ids] || []).each do |i| 
+    if params[:var]=="add"
+      (params[:group_user_ids] || []).each do |i|
         GroupUser.find(i).change_state('joined')
       end
     elsif params[:var]=="kick"
-      (params[:group_user_ids] || []).each do |i| 
+      (params[:group_user_ids] || []).each do |i|
         GroupUser.find(i).delete
       end
     elsif params[:var]=="own"
       old_owner=@group.group_users.where(role: 'admin')
-      old_owner.each do |gu|        
+      old_owner.each do |gu|
         if !((params[:group_user_ids] || []).include?(gu.id.to_s))
           gu.change_role('')
-        end 
+        end
       end
-      (params[:group_user_ids] || []).each do |i| 
-        if !(old_owner.include?(GroupUser.find(i))) 
+      (params[:group_user_ids] || []).each do |i|
+        if !(old_owner.include?(GroupUser.find(i)))
           GroupUser.find(i).change_role('admin')
-        end 
-      end      
+        end
+      end
     end
     redirect_to edit_group_path
   end
@@ -46,18 +45,18 @@ class GroupsController < ApplicationController
     else
       tag_id = Tag.find_by_name(tag_name)
     end
-    if GroupTag.find_by_tag_id(tag_id)==nil  
-      GroupTag.create(group_id: @group.id, tag_id: tag_id) 
+    if GroupTag.find_by_tag_id(tag_id)==nil
+      GroupTag.create(group_id: @group.id, tag_id: tag_id)
     end
     redirect_to edit_group_path
   end
-  
+
   def join_group
-    @group.add_member(current_user) 
+    @group.add_member(current_user)
     redirect_to :back
   end
 	#maca add end
-	
+
   def new
     @group = Group.new
   end
@@ -67,10 +66,10 @@ class GroupsController < ApplicationController
     #maca @group.cost = 'active'
     @group.state = 'active' #maca
     if @group.save
-      #maca redirect_to @group    
+      #maca redirect_to @group
       #maca add start
-      @group.add_owner(current_user) 
-      (params[:tag_ids] || []).each { |i| @group.tags << Tag.find(i) } 
+      @group.add_owner(current_user)
+      (params[:tag_ids] || []).each { |i| @group.tags << Tag.find(i) }
       redirect_to groups_path
       #maca add end
     else
@@ -88,25 +87,25 @@ class GroupsController < ApplicationController
 
   def update
     if @group.update(group_params)
-      #maca redirect_to @group    
+      #maca redirect_to @group
       #maca add start
       #----------------------------------------
       # group tags maintain
       # if expenses exist, cannot remove tag
-      #----------------------------------------      
-      @group_sel_tag.each do |tag|    
-        if (params[:tag_ids] || []).include?(tag.id.to_s) 
+      #----------------------------------------
+      @group_sel_tag.each do |tag|
+        if (params[:tag_ids] || []).include?(tag.id.to_s)
           if !(@group.tags.include?(tag))
             @group.tags << tag
-          end   
-        else 
+          end
+        else
           if !(@group.expenses.find_by_tag_id(tag.id))
             if @group.tags.include?(tag)
               GroupTag.find_by_group_id_and_tag_id(@group.id, tag.id).delete
             end
           end
-        end 
-      end 
+        end
+      end
       redirect_to edit_group_path
       #maca add end
     else
@@ -114,21 +113,15 @@ class GroupsController < ApplicationController
     end
   end
 
-=begin
-  def destroy
-    @group.destroy
-    redirect_to groups_path
-  end
-=end
   def invite
-   GroupMailer.invite(current_user, @group,params[:mailto]).deliver 
+   GroupMailer.invite(current_user, @group,params[:mailto]).deliver
    redirect_to edit_group_path, :notice => "mailed:" + params[:mailto]
   end
 
   private
   #maca add start
   def select_tag
-    @group_sel_tag = Tag.all.where(is_default: true)  
+    @group_sel_tag = Tag.all.where(is_default: true)
     if @group != nil
       @group_sel_tag += @group.tags.where(is_default: false)
     end
