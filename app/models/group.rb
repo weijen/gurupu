@@ -13,6 +13,7 @@
 
 class Group < ActiveRecord::Base
   include Slugable
+  extend Enumerize
   validates :name, presence: true, uniqueness: true, length: { in: 5..20 }
   validates :description, presence: true, length: { maximum: 255 }
 
@@ -24,6 +25,8 @@ class Group < ActiveRecord::Base
   has_many :owner, -> { where("group_users.role = 'admin'") },
            through: :group_users, source: :user
 
+  STATE = [:active, :frozen, :trashed]
+  enumerize :state, in: STATE, predicates: true
 
   def add_owner(user)
     group_users.create(user: user, role: 'admin', state: 'joined')
@@ -32,30 +35,18 @@ class Group < ActiveRecord::Base
   def editable_by?(user)
   end
 
-  def set_state_frozen
-    self[:state] = 'frozen'
-  end
-
-  def set_state_active
-    self[:state] = 'active'
-  end
-  
-  def is_frozen?
-    self[:state] == 'frozen'
-  end
-    
   #maca add start
   def add_member(user)
     group_users.create(user: user, role: '', state: 'wait')
-  end  
-    
+  end
+
   def change_state
-    if self[:state] == 'frozen' 
-      self[:state] = 'active' 
+    if self[:state] == 'frozen'
+      self[:state] = 'active'
     else
-      self[:state] = 'frozen' 
+      self[:state] = 'frozen'
     end
-    self.save    
+    self.save
   end
   #maca add end
 
