@@ -8,6 +8,7 @@ Gurupu::Application.routes.draw do
       put :user_maintain
       put :add_tag
       put :join_group   
+      post :invite
     end    
     resources :expenses do
       collection do 

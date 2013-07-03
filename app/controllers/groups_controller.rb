@@ -124,6 +124,10 @@ class GroupsController < ApplicationController
     redirect_to groups_path
   end
 =end
+  def invite
+   GroupMailer.invite(current_user, @group,params[:mailto]).deliver 
+   redirect_to edit_group_path, :notice => "mailed"
+  end
 
   private
   #maca add start

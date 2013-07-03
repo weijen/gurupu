@@ -46,13 +46,16 @@
   <hr size="5" color="linen">
 
   <!--Invite new member-->
+  <%= form_tag invite_group_path, multipart: true do %>
   <div class="input-append">
     <span class="add-on"><i class="icon-envelope"></i></span>
-    <input class="span3" id="inputEmail" type="text">
-    <button class="btn btn-primary" type="button">邀請加入此團</button>
+    <!--input class="span3" id="inputEmail" type="text"-->
+    <%= text_field_tag "mailto", nil, :class => 'span3' %>
+    <%= submit_tag '邀請加入此團', :class => 'btn btn-primary' %> 
+    <!--button class="btn btn-primary" type="button">邀請加入此團</button-->
   </div>    
   <hr size="5" color="linen">
-
+  <% end %>
   <!--Remove member-->      
   團員移除:
   <%= simple_form_for @group, 
