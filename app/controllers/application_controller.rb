@@ -2,7 +2,8 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  helper_method :current_user, :login?
+  #maca helper_method :current_user, :login?
+  helper_method :current_user, :login?, :flash_class, :flash_clear #maca 
 
   private
 
@@ -15,11 +16,13 @@ class ApplicationController < ActionController::Base
   end
 
   #maca add start
-  def select_tag
-    @group_sel_tag = Tag.all.where(is_default: true)
-    if @group != nil
-     @group_sel_tag += @group.tags.where(is_default: false)    
+  def flash_class(level)
+    case level
+    when :notice then "alert alert-info"
+    when :success then "alert alert-success"
+    when :error then "alert alert-error"
+    when :alert then "alert alert-error"
     end
   end
-  #maca add end
+  #maca add end  
 end

@@ -8,7 +8,9 @@
       描述: <%= @group.description%> 
       <% if @user_status=="" %>
         <br><br>      
-        <button class="btn btn-info" type="button">申請加入此團</button>
+        <button class="btn btn-info" type="button">
+          <%=link_to "申請加入此團",join_group_group_path(@group.slug), method: :put %>
+        </button>
       <% elsif @user_status=="wait" %>
         <br><br>      
         <font color="palevioletred"> 團員身份: 待管理員審核 </font>
@@ -20,7 +22,9 @@
         <br>
         <div class="input-append">
           <button class="btn" type="button"> <%=link_to '帳目', action:'index'%> </button>
-          <button class="btn" type="button"> <%=link_to '報帳', action:'new'%> </button>
+          <% if (@group.state == 'active') %>
+            <button class="btn" type="button"> <%=link_to '報帳', action:'new'%> </button>
+          <% end %>   
           <button class="btn" type="button"> <%=link_to '報表', action:'summary'%> </button>      
         </div>               
       <% end %>         

@@ -1,8 +1,8 @@
 class ExpensesController < ApplicationController
   #maca add start
+  prepend_before_action :check_frozen, only: [:destroy, :show, :update, :create]
   prepend_before_action :check_join
   before_action :set_expense, only: [:edit, :update, :destroy, :show] 
-  before_action :select_tag, only: [:new, :edit] 
   #maca add end
 
   def index
@@ -58,6 +58,13 @@ class ExpensesController < ApplicationController
   private
 
   #maca add start
+  def check_frozen
+    if @group.is_frozen?
+      flash[:alert] = action_name+" fail! Group state is frozen"  
+      redirect_to group_expenses_path
+    end
+  end
+
   def check_join
     @group = Group.find_by_slug(params[:group_id])
     @user_status = ""    

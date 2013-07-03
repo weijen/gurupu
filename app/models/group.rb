@@ -40,7 +40,15 @@ class Group < ActiveRecord::Base
     self[:state] = 'active'
   end
   
+  def is_frozen?
+    self[:state] == 'frozen'
+  end
+    
   #maca add start
+  def add_member(user)
+    group_users.create(user: user, role: '', state: 'wait')
+  end  
+    
   def change_state
     if self[:state] == 'frozen' 
       self[:state] = 'active' 
