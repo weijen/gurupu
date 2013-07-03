@@ -1,10 +1,7 @@
 class GroupsController < ApplicationController
   #maca before_action :set_group, only: [:show, :edit, :update, :destroy]
-  #maca start
-  prepend_before_action :flash_clear 
-  prepend_before_action :set_group, except: [:new, :create] 
-  before_action :select_tag, only: [:new, :create, :edit, :update, :index]    
-  #maca add end
+  prepend_before_action :set_group, except: [:new, :create]  #maca
+  before_action :select_tag, only: [:new, :create, :edit, :update, :index]  #maca
 
   def index
     @groups=current_user.groups #maca
@@ -59,7 +56,6 @@ class GroupsController < ApplicationController
     @group.add_member(current_user) 
     redirect_to :back
   end
-  	  
 	#maca add end
 	
   def new

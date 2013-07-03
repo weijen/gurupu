@@ -24,9 +24,5 @@ class ApplicationController < ActionController::Base
     when :alert then "alert alert-error"
     end
   end
-
-  def flash_clear
-    flash.clear 
-  end
   #maca add end  
 end
