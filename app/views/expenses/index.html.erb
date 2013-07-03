@@ -22,12 +22,13 @@
           <td> <%= User.find(e.user_id).name %> </td>
           <td> <%= e.cost %> </td>
           <td>
-            <% if e.user_id==current_user.id %> 
+            <% if (@group.state == 'active') && (e.user_id==current_user.id) %> 
               <%=link_to 'update', action:'edit', id: e%> 
             <% end %>
           </td>
           <td> 
-            <% if @group.owner.include?(current_user) || e.user_id==current_user.id %>
+            <% if (@group.state == 'active') &&
+                  (@group.owner.include?(current_user) || e.user_id==current_user.id) %>
               <%=link_to 'delete', action:'destroy', method: :delete, id: e %> 
             <% end %>
           </td>

@@ -3,7 +3,7 @@ class GroupsController < ApplicationController
   #maca start
   prepend_before_action :flash_clear 
   prepend_before_action :set_group, except: [:new, :create] 
-  before_action :select_tag, only: [:new, :edit, :index]    
+  before_action :select_tag, only: [:new, :create, :edit, :update, :index]    
   #maca add end
 
   def index
@@ -29,7 +29,6 @@ class GroupsController < ApplicationController
     elsif params[:var]=="own"
       old_owner=@group.group_users.where(role: 'admin')
       old_owner.each do |gu|        
-        #if !((params[:user_ids] || []).include?(gu.id)) 
         if !((params[:group_user_ids] || []).include?(gu.id.to_s))
           gu.change_role('')
         end 
@@ -95,8 +94,23 @@ class GroupsController < ApplicationController
     if @group.update(group_params)
       #maca redirect_to @group    
       #maca add start
-      @group.tags.delete_all
-      (params[:tag_ids] || []).each { |i| @group.tags << Tag.find(i) }             
+      #----------------------------------------
+      # group tags maintain
+      # if expenses exist, cannot remove tag
+      #----------------------------------------      
+      @group_sel_tag.each do |tag|    
+        if (params[:tag_ids] || []).include?(tag.id.to_s) 
+          if !(@group.tags.include?(tag))
+            @group.tags << tag
+          end   
+        else 
+          if !(@group.expenses.find_by_tag_id(tag.id))
+            if @group.tags.include?(tag)
+              GroupTag.find_by_group_id_and_tag_id(@group.id, tag.id).delete
+            end
+          end
+        end 
+      end 
       redirect_to edit_group_path
       #maca add end
     else

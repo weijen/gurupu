@@ -20,7 +20,9 @@
         <br>
         <div class="input-append">
           <button class="btn" type="button"> <%=link_to '帳目', action:'index'%> </button>
-          <button class="btn" type="button"> <%=link_to '報帳', action:'new'%> </button>
+          <% if (@group.state == 'active') %>
+            <button class="btn" type="button"> <%=link_to '報帳', action:'new'%> </button>
+          <% end %>   
           <button class="btn" type="button"> <%=link_to '報表', action:'summary'%> </button>      
         </div>               
       <% end %>         
