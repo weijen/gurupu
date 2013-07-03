@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: groups
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)
+#  description :text(255)
+#  slug        :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
+#  state       :string(255)
+#
+
 class Group < ActiveRecord::Base
   include Slugable
   validates :name, presence: true, uniqueness: true, length: { in: 5..20 }
