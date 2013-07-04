@@ -14,16 +14,20 @@
 class GroupUser < ActiveRecord::Base
   belongs_to :group
   belongs_to :user
+  extend Enumerize
+
+  STATE = [:wait, :join, :invite]
+  enumerize :state, in: STATE, predicates: true
 
 	#maca add start
   def change_state(status)
     self[:state] = status
-    self.save    
+    self.save
   end
 
   def change_role(role)
     self[:role] = role
-    self.save    
-  end  
+    self.save
+  end
   #maca add end
 end

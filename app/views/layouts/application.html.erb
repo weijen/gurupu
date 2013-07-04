@@ -7,23 +7,21 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <!-- bootstrap flash -->    
-  <div>
-    <% flash.each do |key, value| %>
-      <div class="<%= flash_class(key) %> fade in">
-        <a href="#" data-dismiss="alert" class="close">×</a>
-        <%= value %>
+  <% flash.each do |name, msg| %>
+    <% if msg.is_a?(String) %>
+      <div class="alert alert-<%= name == :notice ? "success" : "error" %>">
+        <a class="close" data-dismiss="alert">&#215;</a>
+        <%= content_tag :div, msg, :id => "flash_#{name}" %>
       </div>
     <% end %>
-    <% flash.clear %>
-  </div>
+  <% end %>
 
 	<div id="header">
     <div class="row" align="center">
       <div class="span8" >
 				<h1>團體記帳 GURUPU</h1>
       </div>
-      <!-- log in/log out -->              
+      <!-- log in/log out -->
       <div class="span4">
       	<% if current_user %>
           <%= current_user.name %>
@@ -32,7 +30,7 @@
           <%= link_to "Sign in", "/auth/facebook" %>
         <% end %>
       </div>
-    </div>		
+    </div>
 	</div>
 
 	<div id="content">
@@ -40,12 +38,12 @@
 		  <div class="span0.5">
 		  </div>
 		  <div class="span11.5">
-				<%= yield %>		
+				<%= yield %>
 		  </div>
-		</div>			
+		</div>
 	</div>
-	
-	<div id="footer">	    
+
+	<div id="footer">
 	</div>
 </body>
 </html>
