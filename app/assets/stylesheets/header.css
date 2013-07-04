@@ -1,0 +1,13 @@
+.user-info {
+  font-size: 16px;
+  margin-top: 12px;
+}
+
+.user-avastar {
+  width: 36px;
+  height: 36px;
+}
+
+header>hr {
+  margin-top: 5px;
+}

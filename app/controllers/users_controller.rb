@@ -6,6 +6,10 @@ class UsersController < ApplicationController
   end
 
   def create
+    group_user = current_user.group_users.build(group: @group,
+      role: :member, state: :wait)
+    group_user.save
+    #TO-DO redirect
   end
 
   private

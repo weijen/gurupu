@@ -7,38 +7,39 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <% flash.each do |name, msg| %>
-    <% if msg.is_a?(String) %>
-      <div class="alert alert-<%= name == :notice ? "success" : "error" %>">
-        <a class="close" data-dismiss="alert">&#215;</a>
-        <%= content_tag :div, msg, :id => "flash_#{name}" %>
-      </div>
-    <% end %>
-  <% end %>
-
-	<header class="container">
-    <div class="row">
-      <div class="span8" >
-				<h1>團體記帳 GURUPU</h1>
-      </div>
-      <div class="span4">
-      	<% if current_user %>
-          <%= current_user.name %>
-          <%= link_to "Sign Out", signout_path %>
-        <% else %>
-          <%= link_to "Sign in", "/auth/facebook" %>
-        <% end %>
-      </div>
-    </div>
-	</header>
-
 	<div class="container">
-		<div class="row">
-			<%= yield %>
-		</div>
+    <header>
+      <div class="row">
+        <div class="span8" >
+          <h1>GURUPU</h1>
+        </div>
+        <div class="user-info pull-right">
+          <% if login? %>
+            <img class="img-circle user-avastar" src="https://graph.facebook.com/<%= current_user.uid %>/picture" />
+            <%= current_user.name %>&nbsp;|&nbsp;
+            <%= link_to "Sign Out", signout_path %>
+          <% else %>
+            <%= link_to "Sign in", "/auth/facebook" %>
+          <% end %>
+        </div>
+      </div>
+      <hr />
+    </header>
+    <div class="flash-messages">
+      <% flash.each do |name, msg| %>
+        <% if msg.is_a?(String) %>
+          <div class="alert alert-<%= name == :notice ? "success" : "error" %>">
+            <a class="close" data-dismiss="alert">&#215;</a>
+            <%= content_tag :div, msg, :id => "flash_#{name}" %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="content">
+    	<%= yield %>
+    </div>
+    <footer>
+    </footer>
 	</div>
-
-	<footer>
-	</footer>
 </body>
 </html>

@@ -1,7 +1,9 @@
-<div class="span8">
-  <h2><%= @group.name %></h2>
-  <hr />
-  <p><%= @group.description %></p>
-  <%= link_to '確認入團', group_users_path(@group), method: :post, class: 'btn btn-primary' %>
+<div class="row">
+  <div class="span8">
+    <h2><%= @group.name %></h2>
+    <hr />
+    <p><%= @group.description %></p>
+    <%= link_to '確認入團', group_users_path(@group), method: :post, class: 'btn btn-primary' %>
+  </div>
+  <%= render 'shared/groups_sidebar' %>
 </div>
-<%= render 'shared/groups_sidebar' %>
