@@ -17,7 +17,9 @@ class GroupUser < ActiveRecord::Base
   extend Enumerize
 
   STATE = [:wait, :join, :invite]
+  ROLE = [:admin, :member]
   enumerize :state, in: STATE, predicates: true
+  enumerize :role, in: ROLE, predicates: true
 
 	#maca add start
   def change_state(status)

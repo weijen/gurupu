@@ -1,0 +1,15 @@
+<div class="span4">
+  <div class="sidebar">
+    <%= link_to '建立新團體', new_group_path, class: 'btn btn-primary' %>
+  <% if current_user.groups.any? %>
+    <ul>
+    <% current_user.groups.each do |group| %>
+      <li>
+        <div><%= group.name %></div>
+        <div><%= link_to '瀏覽', group_path(group), class: 'btn' %></div>
+      </li>
+    <% end %>
+    </ul>
+  <% end %>
+  </div>
+</div>

@@ -4,7 +4,7 @@ class GroupsController < ApplicationController
   before_action :select_tag, only: [:new, :create, :edit, :update, :index]  #maca
 
   def index
-    @groups=current_user.groups #maca
+    @groups = current_user.groups #maca
   end
 
 	#maca add start
@@ -83,6 +83,9 @@ class GroupsController < ApplicationController
   end
 
   def show
+    unless current_user.is_member_of?(@group)
+      redirect_to new_group_user(@group)
+    end
   end
 
   def update
