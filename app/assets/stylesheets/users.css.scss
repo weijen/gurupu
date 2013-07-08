@@ -7,10 +7,14 @@
   border: 1px solid #e5e5e5;
   box-shadow: 0 1px 2px rgba(0,0,0,.05);
   margin-bottom: 20px;
-}
 
-.invite-block>form {
-  margin: 0 0 0 0;
-  padding: 10px;
-  display: inline-block;
+  form {
+    margin: 5px 0 0 0;
+    padding: 10px;
+    display: inline-block;
+
+    input[type="submit"] {
+      margin-top: -10px;
+    }
+  }
 }

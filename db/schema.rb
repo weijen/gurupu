@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130703122108) do
+ActiveRecord::Schema.define(version: 20130708083512) do
 
   create_table "expenses", force: true do |t|
     t.string   "name"
@@ -61,6 +61,15 @@ ActiveRecord::Schema.define(version: 20130703122108) do
   end
 
   add_index "groups", ["slug"], name: "index_groups_on_slug"
+
+  create_table "invitations", force: true do |t|
+    t.integer "sender_id"
+    t.integer "group_id"
+    t.string  "email"
+    t.string  "slug"
+  end
+
+  add_index "invitations", ["slug"], name: "index_invitations_on_slug"
 
   create_table "tags", force: true do |t|
     t.string   "name"
