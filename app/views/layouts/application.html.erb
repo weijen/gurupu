@@ -15,7 +15,7 @@
         </div>
         <div class="user-info pull-right">
           <% if login? %>
-            <img class="img-circle user-avastar" src="https://graph.facebook.com/<%= current_user.uid %>/picture" />
+            <%= avastar_for(current_user) %>
             <%= current_user.name %>&nbsp;|&nbsp;
             <%= link_to "Sign Out", signout_path %>
           <% else %>

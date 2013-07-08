@@ -22,7 +22,7 @@ class Group < ActiveRecord::Base
   has_many :tags, through: :group_tags
   has_many :group_users
   has_many :members, through: :group_users, source: :user
-  has_many :owner, -> { where("group_users.role = 'admin'") },
+  has_many :owners, -> { where("group_users.role = 'admin'") },
            through: :group_users, source: :user
 
   STATE = [:active, :frozen, :trashed]
@@ -34,20 +34,5 @@ class Group < ActiveRecord::Base
 
   def editable_by?(user)
   end
-
-  #maca add start
-  def add_member(user)
-    group_users.create(user: user, role: '', state: 'wait')
-  end
-
-  def change_state
-    if self[:state] == 'frozen'
-      self[:state] = 'active'
-    else
-      self[:state] = 'frozen'
-    end
-    self.save
-  end
-  #maca add end
 
 end

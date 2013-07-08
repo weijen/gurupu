@@ -2,6 +2,10 @@ class UsersController < ApplicationController
   before_action :set_group
   before_action :set_user, only: [:update, :destroy]
 
+  def index
+    @is_owner = current_user.is_owner_of?(@group)
+  end
+
   def new
   end
 
@@ -9,7 +13,7 @@ class UsersController < ApplicationController
     group_user = current_user.group_users.build(group: @group,
       role: :member, state: :wait)
     group_user.save
-    #TO-DO redirect
+    redirect group_expenses_path(@group)
   end
 
   private
