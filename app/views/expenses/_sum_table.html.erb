@@ -1,0 +1,75 @@
+<!-- table1 -->
+<%if @sel_type[0]=="u" %>
+	<% title1="團員" %>
+	<% title2="分類" %>
+<% else %>	
+	<% title1="分類" %>
+	<% title2="團員" %>
+<% end %>
+
+<table class="table table-condensed"> 
+  <thead>
+    <tr bgcolor=whitesmoke>
+      <th colspan="4"><%= title1 %></th>
+      <th> <dd class="text-right">金額</dd></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% pretype=0 %>
+    <% @ex_sum_all.each do |type, key1, key2, costs, name1, name2| %>     
+      <% row_id="row_"+key1.to_s %>
+      <% row_child="child_row_"+key1.to_s %>
+
+      <% if pretype==1 && (type==0 || type==2) %>
+                </table>
+            </div> <!--div class="row"-->
+          </td>
+        </tr>     
+      <% end %>   
+      <% if type==0 %>            
+        <tr class="parent" id=<%=row_id%> bgcolor="#FCFCFC">
+          <td colspan="4"> <%= name1 %> </td>
+          <td> <dd class="text-right"><%= costs %></dd> </td>
+        </tr>   
+        <tr class=<%=row_child%>>
+        	<td colspan="1">
+          <td colspan="4">
+            <div class="row">
+                <table class="table table-condensed"> 
+                  <tr bgcolor="#E0EEEE">
+                    <th colspan="3"><%= title2 %></th>
+                    <th> <dd class="text-right">金額</dd></th>
+                  </tr>   
+      <% elsif type==1 %>             
+                    <tr>
+                      <td colspan="3"> <%= name2 %> </td>
+                      <td> <dd class="text-right"><%= costs %></dd> </td>
+                    </tr>   
+      <% elsif type==2 %>   
+        <tr bgcolor=oldlace>
+          <td colspan="4">總計</td> 
+          <td> <dd class="text-right"><%= costs %></dd> </td>       
+        </tr>   
+      <% end %> 
+
+      <% pretype=type %>
+    <% end %> <!--@ex_sum_all.each do-->      
+  </tbody>
+</table>
+
+
+<style>  
+.selected{ background:#ffffff;color:#000000;}
+</style>
+
+<script type="text/javascript">
+$(function(){
+	$('tr.parent').click(function(){   
+		$(this)
+		.toggleClass("selected")   			 
+		.siblings('.child_'+this.id).toggle();  
+	}).click();
+})
+</script>
+
+

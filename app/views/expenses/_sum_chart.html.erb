@@ -1,0 +1,60 @@
+<script type="text/javascript">
+  $(function() {
+    var data = google.visualization.arrayToDataTable([
+      ['Key1 Name', 'Costs', 'Key1'],     
+      <% @ex_sum1.each do |key1, sum_costs, name1| %>         
+         ["<%= name1 %>", <%= sum_costs %>, <%= key1 %>],
+      <% end %>
+    ]);
+
+    var options = {
+      title: ''
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+
+    function selectHandler() {
+      var selectedItem = chart.getSelection()[0];
+      if (selectedItem) {
+        var key = data.getValue(selectedItem.row, 2);
+        var name1 = data.getValue(selectedItem.row, 0);
+        drawChart2(key, name1);
+      }
+    }
+    google.visualization.events.addListener(chart, 'select', selectHandler);
+    chart.draw(data, options);
+  }); 
+
+  function drawChart2(key, name1) {
+    var data = new google.visualization.DataTable();
+    var i=0;
+    data.addColumn('string','Name2');
+    data.addColumn('number','Cost2');   
+    <% @ex_sum_all.each do |type, key1, key2, costs, name1, name2| %> 
+      <% if type==1 %>
+        if (<%= key1 %> == key ) {        
+          data.addRows(1);
+          data.setValue(i, 0, "<%= name2 %>");
+          data.setValue(i++, 1, <%= costs %>);
+        }
+      <% end %> 
+    <% end %>  
+
+    var options = {
+      title: name1
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
+           
+    chart.draw(data, options);
+  }  
+</script>
+
+<div class="row">
+  <div class="span6">
+    <div id="chart_div" style="width: 600px; height: 400px;"></div>
+  </div>
+  <div class="span6">
+    <div id="chart_div2" style="width: 600px; height: 400px;"></div>
+  </div>
+</div>

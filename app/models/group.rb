@@ -29,13 +29,17 @@ class Group < ActiveRecord::Base
   enumerize :state, in: STATE, predicates: true
 
   def add_owner(user)
-    group_users.create(user: user, role: 'admin', state: 'joined')
+    group_users.create(user: user, role: 'admin', state: 'join')
   end
 
   def editable_by?(user)
   end
 
   #maca add start
+  def is_active?
+    self[:state] == 'active'
+  end
+
   def add_member(user)
     group_users.create(user: user, role: '', state: 'wait')
   end

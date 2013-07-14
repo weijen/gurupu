@@ -31,7 +31,7 @@ gem 'jbuilder', '~> 1.2'
 gem 'simple_form'
 gem 'anjlab-bootstrap-rails', '>= 2.3', :require => 'bootstrap-rails'
 gem 'enumerize'
-
+gem 'bootstrap-datepicker-rails'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

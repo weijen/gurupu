@@ -16,7 +16,7 @@ class GroupsController < ApplicationController
   def user_maintain
     if params[:var]=="add"
       (params[:group_user_ids] || []).each do |i|
-        GroupUser.find(i).change_state('joined')
+        GroupUser.find(i).change_state('join')
       end
     elsif params[:var]=="kick"
       (params[:group_user_ids] || []).each do |i|
@@ -79,7 +79,7 @@ class GroupsController < ApplicationController
 
   def edit
     @wait_user=@group.group_users.where(state: 'wait')     	#maca
-    @all_member=@group.group_users.where(state: 'joined')   #maca
+    @all_member=@group.group_users.where(state: 'join')   #maca
   end
 
   def show
