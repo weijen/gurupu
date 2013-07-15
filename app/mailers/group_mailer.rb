@@ -6,9 +6,8 @@ class GroupMailer < ActionMailer::Base
   #
   #   en.group_mailer.invite.subject
   #
-  def invite(user, group, mailto)
-    @user = user
-    @group = group
-    mail(to: mailto, subject:'user.name invite you! Join GURUPU')
+  def invite(invitation)
+    @invitation = invitation
+    mail(to: invitation.email, subject: "#{user.name} invite you to join GURUPU")
   end
 end

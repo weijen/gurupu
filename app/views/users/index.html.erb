@@ -29,11 +29,13 @@
         <% if @is_owner %>
           <% case %>
           <% when member.id == current_user.id %>
-            <%= link_to '退出管理員', [@group, member], method: :patch, class: 'btn', confirm: '確定退出管理員?' %>
+            <%= link_to '退出管理員', role_group_user_path(@group, member), method: :patch, class: 'btn', confirm: '確定退出管理員?' %>
           <% when member.is_waiting?(@group) %>
-            <%= link_to '接受', '', class: 'btn' %>
+            <%= link_to '接受', confirm_group_user_path(@group, member),
+            method: :patch, class: 'btn' %>
           <% when !member.is_owner_of?(@group) %>
-            <%= link_to '指定為管理員', [@group, member], method: :patch, class: 'btn', confirm: '確定指定此使用者為管理員?' %>
+            <%= link_to '指定為管理員', role_group_user_path(@group, member),
+            method: :patch, class: 'btn', confirm: '確定指定此使用者為管理員?' %>
           <% end %>
         <% end %>
         </td>

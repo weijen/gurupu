@@ -4,13 +4,20 @@ Gurupu::Application.routes.draw do
   get "/login" => "sessions#index"
   resources :groups do
     resource :state, only: [:create, :delete]
-    resources :users
+    resources :users, only: [:index, :new, :create, :destroy] do
+      patch :confirm, on: :member
+      patch :role, on: :member
+    end
+    resource :invitation, only: [:create]
     resources :tags, except: [:index]
     resources :expenses do
       collection do
         get :summary
       end
     end
+  end
+  resources :invitations, only: [:accept] do
+    patch :accept, on: :member
   end
   get "welcome/index"
   root :to => 'welcome#index'
