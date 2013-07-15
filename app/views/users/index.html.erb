@@ -1,0 +1,54 @@
+<div class="row">
+  <div class="span8">
+    <h2><%= @group.name %></h2>
+    <hr />
+  <% if @is_owner %>
+    <div class="invite-block">
+    <%= form_tag group_users_path(@group) do |f| %>
+      <span>邀請團員：</span>
+      <%= select_tag 'type', options_for_select(['會員', '非會員']), class: 'input-small' %>
+      <%= text_field_tag 'member', nil, placeholder: '輸入會員名稱' %>
+      <%= submit_tag '確認', class: 'btn btn-primary' %>
+    <% end %>
+  <% end %>
+    </div>
+  <% if @group.members.any? %>
+    <table class="table">
+    <% @group.members.each do |member| %>
+      <tr>
+        <td><%= avastar_for(member) %>&nbsp;<%= member.name %></td>
+        <td>
+          <% case %>
+          <% when member.is_owner_of?(@group) %>
+            <%= '管理員' %>
+          <% when member.is_waiting?(@group) %>
+            <%= '待審核' %>
+          <% end %>
+        </td>
+        <td>
+        <% if @is_owner %>
+          <% case %>
+          <% when member.id == current_user.id %>
+            <%= link_to '退出管理員', role_group_user_path(@group, member), method: :patch, class: 'btn', confirm: '確定退出管理員?' %>
+          <% when member.is_waiting?(@group) %>
+            <%= link_to '接受', confirm_group_user_path(@group, member),
+            method: :patch, class: 'btn' %>
+          <% when !member.is_owner_of?(@group) %>
+            <%= link_to '指定為管理員', role_group_user_path(@group, member),
+            method: :patch, class: 'btn', confirm: '確定指定此使用者為管理員?' %>
+          <% end %>
+        <% end %>
+        </td>
+        <td>
+        <% if @is_owner && !member.is_owner_of?(@group) %>
+          <%= link_to '刪除', [@group, member], method: :delete, class: 'btn', confirm: '確定刪除此團員?' %>
+        <% end %>
+        </td>
+        <td>
+      </tr>
+    <% end %>
+    </table>
+  <% end %>
+  </div>
+  <%= render 'shared/groups_sidebar' %>
+</div>

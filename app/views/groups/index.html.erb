@@ -2,17 +2,17 @@
 <% if @groups.count==0 %>
   <%= link_to(new_group_path, :class => "btn btn-info btn-large" ) do  %>
     建立新團
-  <% end %> 
-<!-- user had groups -->  
-<% else %>  
+  <% end %>
+<!-- user had groups -->
+<% else %>
   <h3>
     <font color="palevioletred">
       參加的團體
     </font>
   <h3>
 
-  <table class="table table-hover" width:100%>    
-    <thead>   
+  <table class="table table-hover" width:100%>
+    <thead>
       <tr>
         <th>團名</th>
         <th>敘述</th>
@@ -20,26 +20,26 @@
         <th></th>
       </tr>
     </thead>
-    <tbody>       
+    <tbody>
       <% @groups.each do |g| %>
         <tr>
           <td><%= g.name %></td>
-          <td><%= g.description %></td>   
+          <td><%= g.description %></td>
           <td><%= link_to 'Link', group_expenses_path(g.slug) %>
-          </td>        
+          </td>
           <td>
-            <% if g.owner.include?(current_user) %>
+            <% if g.owners.include?(current_user) %>
               <%= link_to "管理", edit_group_path(g.slug) %>
-            <% end %>             
-          </td>        
+            <% end %>
+          </td>
         </tr>
-      <% end %>   
+      <% end %>
     </tbody>
-  </table>  
+  </table>
 
   <%= link_to(new_group_path, :class => "btn btn-info" ) do  %>
     建立新團
-  <% end %> 
-<% end %> 
+  <% end %>
+<% end %>
 
 

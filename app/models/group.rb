@@ -22,7 +22,7 @@ class Group < ActiveRecord::Base
   has_many :tags, through: :group_tags
   has_many :group_users
   has_many :members, through: :group_users, source: :user
-  has_many :owner, -> { where("group_users.role = 'admin'") },
+  has_many :owners, -> { where("group_users.role = 'admin'") },
            through: :group_users, source: :user
 
   STATE = [:active, :frozen, :trashed]

@@ -16,7 +16,7 @@ class GroupUser < ActiveRecord::Base
   belongs_to :user
   extend Enumerize
 
-  STATE = [:wait, :join, :invite]
+  STATE = [:wait, :join]
   ROLE = [:admin, :member]
   enumerize :state, in: STATE, predicates: true
   enumerize :role, in: ROLE, predicates: true

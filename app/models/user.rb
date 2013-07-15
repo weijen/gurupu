@@ -38,4 +38,12 @@ class User < ActiveRecord::Base
   def is_member_of?(group)
     groups.include?(group)
   end
+
+  def is_owner_of?(group)
+    group_users.find_by(group: group).role.admin?
+  end
+
+  def is_waiting?(group)
+    group_users.find_by(group: group).state.wait?
+  end
 end
