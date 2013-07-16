@@ -4,10 +4,11 @@
     <hr />
   <% if @is_owner %>
     <div class="invite-block">
-    <%= form_tag group_users_path(@group) do |f| %>
+    <%= form_tag group_invitation_path(@group) do |f| %>
       <span>邀請團員：</span>
-      <%= select_tag 'type', options_for_select(['會員', '非會員']), class: 'input-small' %>
-      <%= text_field_tag 'member', nil, placeholder: '輸入會員名稱' %>
+      <%= select_tag 'member-type', options_for_select({'會員'=> 'uid', '非會員'=>'email'}), class: 'input-small' %>
+      <%= text_field_tag 'uid', nil, placeholder: '輸入會員名稱' %>
+      <%= text_field_tag 'email', nil, class: 'hidden',placeholder: '輸入Email' %>
       <%= submit_tag '確認', class: 'btn btn-primary' %>
     <% end %>
   <% end %>

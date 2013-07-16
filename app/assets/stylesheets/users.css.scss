@@ -16,5 +16,9 @@
     input[type="submit"] {
       margin-top: -10px;
     }
+
+    input.hidden {
+      display: none;
+    }
   }
 }

@@ -22,7 +22,7 @@ class UsersController < ApplicationController
 
     if @user.id == current_user.id && group_user.role.admin?
       if @group.owners.size == 1
-        flash[:error] = 'Fail! only one admin'
+        flash[:error] = '你是唯一的管理員'
         return redirect_to group_users_path(@group)
       end
       group_user.role = :member
@@ -59,6 +59,12 @@ class UsersController < ApplicationController
     end
   end
 
+  def typeahead
+    result = User.select(:uid, :name).
+      where("lower(name) like ?", "#{params[:name].downcase}%").to_a
+    render json: result.to_json(only: [:uid, :name])
+  end
+
   private
   def set_group
     @group = Group.find_by_slug(params[:group_id])
@@ -70,7 +76,7 @@ class UsersController < ApplicationController
 
   def check_permission
     if current_user == nil || !current_user.is_owner_of?(@group)
-      redirect @group, error: '你是唯一的管理員'
+      redirect @group, error: 'Permission denied'
     end
   end
 

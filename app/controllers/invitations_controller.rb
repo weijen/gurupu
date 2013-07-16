@@ -17,9 +17,8 @@ class InvitationsController < ApplicationController
   end
 
   def accept
-    group_user = GroupUser.new(
-      user: current_user, @invitation.group,
-      role: :member, state: member)
+    group_user = GroupUser.new(user: current_user, group: @invitation.group,
+      role: :member, state: :join)
     if group_user.save
       redirect_to group_path(@invitation.group)
     else
