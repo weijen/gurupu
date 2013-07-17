@@ -10,13 +10,19 @@ jQuery ->
     $("##{selected_id}").removeClass('hidden')
     $("##{unselected_id}").addClass('hidden')
 
+
   $('#uid').typeahead
     minLength: 2
     source: (query, process) ->
       $.get '/users/typeahead', name: query, (data) ->
         nameList = []
-        $.each(data, -> nameList.push(this.name))
+        for item in data
+          nameList.push(item.name)
         process(nameList)
     updater: (item) ->
       console.log(item)
-      return item
+      item
+    highlighter: (item) ->
+      console.log this
+      '<div class="suggestion"><img class="img-rounded" src="https://graph.facebook.com/100000134650492/picture">' +
+      ' <span class="">' + item + '</span></div>'

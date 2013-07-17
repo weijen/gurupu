@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     group_user = current_user.group_users.build(group: @group,
       role: :member, state: :wait)
     group_user.save
-    redirect group_expenses_path(@group)
+    redirect_to group_expenses_path(@group)
   end
 
   def role

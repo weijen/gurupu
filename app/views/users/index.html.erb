@@ -17,7 +17,7 @@
     <table class="table">
     <% @group.members.each do |member| %>
       <tr>
-        <td><%= avastar_for(member) %>&nbsp;<%= member.name %></td>
+        <td><%= avatar_for(member) %>&nbsp;<%= member.name %></td>
         <td>
           <% case %>
           <% when member.is_owner_of?(@group) %>

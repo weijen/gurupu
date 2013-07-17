@@ -15,7 +15,7 @@
         </div>
         <div class="user-info pull-right">
           <% if login? %>
-            <%= avastar_for(current_user) %>
+            <%= avatar_for(current_user) %>
             <%= current_user.name %>&nbsp;|&nbsp;
             <%= link_to "Sign Out", signout_path %>
           <% else %>

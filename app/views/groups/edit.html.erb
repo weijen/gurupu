@@ -1,46 +1,46 @@
 <% gp_status = { active: "活動中", frozen: "凍結報帳" } %>
 
-<% if @group.owner.include?(current_user) %>
+<% if @group.owners.include?(current_user) %>
 <font size=4>
-  <!--Group-->  
-  團體狀態: 
+  <!--Group-->
+  團體狀態:
   <%= gp_status[@group.state.to_sym] %>
-  <font size=2 color=darkcyan>　　　　　　　變更為</font>  
-  <button class="btn btn-warning" type="button">     
-    <% if @group.state=="active" %> 
-      <% sts_name=gp_status.values[1] %> 
-    <% else %>  
-      <% sts_name=gp_status.values[0] %> 
+  <font size=2 color=darkcyan>　　　　　　　變更為</font>
+  <button class="btn btn-warning" type="button">
+    <% if @group.state=="active" %>
+      <% sts_name=gp_status.values[1] %>
+    <% else %>
+      <% sts_name=gp_status.values[0] %>
     <% end %>
     <%=link_to sts_name,state_change_group_path,method: :put %>
-  </button>      
-  <br>       
+  </button>
+  <br>
   <%= render 'form' %>
 
-  <!--New Tag-->  
+  <!--New Tag-->
   <%= simple_form_for Tag.new,
-      url: add_tag_group_path(var: "add"), 
-      method: :put do |t| %>  
-    <%= t.input :name, input_html: {class: "span3"}, label: "新增類別" %>  
+      url: add_tag_group_path(var: "add"),
+      method: :put do |t| %>
+    <%= t.input :name, input_html: {class: "span3"}, label: "新增類別" %>
     <%= t.button :submit ,"新增", class: "btn btn-success" %>
-  <% end %>  
+  <% end %>
   <hr size="5" color="linen">
 
-  <!--Add new member-->    
+  <!--Add new member-->
   待審核團員:
-  <% if @wait_user.count!=0 %>  
-    <%= simple_form_for @group, 
-      url: user_maintain_group_path(var: "add"), 
-      method: :put do |g| %>  
-      <% @wait_user.each do |gu| %>    
-      <ul>    
+  <% if @wait_user.count!=0 %>
+    <%= simple_form_for @group,
+      url: user_maintain_group_path(var: "add"),
+      method: :put do |g| %>
+      <% @wait_user.each do |gu| %>
+      <ul>
         <%= check_box_tag 'group_user_ids[]', gu.id %>
         <%= User.find(gu.user_id).name %>
-      </ul>    
-      <% end %>  
+      </ul>
+      <% end %>
       <%= g.button :submit ,"確認加入", class: "btn btn-info" %>
     <% end %>
-  <% else %>  
+  <% else %>
     無
   <% end %>
   <hr size="5" color="linen">
@@ -51,37 +51,37 @@
     <span class="add-on"><i class="icon-envelope"></i></span>
     <!--input class="span3" id="inputEmail" type="text"-->
     <%= text_field_tag "mailto", nil, :class => 'span3' %>
-    <%= submit_tag '邀請加入此團', :class => 'btn btn-primary' %> 
+    <%= submit_tag '邀請加入此團', :class => 'btn btn-primary' %>
     <!--button class="btn btn-primary" type="button">邀請加入此團</button-->
-  </div>    
+  </div>
   <hr size="5" color="linen">
   <% end %>
-  <!--Remove member-->      
+  <!--Remove member-->
   團員移除:
-  <%= simple_form_for @group, 
-    url: user_maintain_group_path(var: "kick"), method: :put do |g| %>  
-    <% @all_member.each do |gu| %>    
-    <ul>    
+  <%= simple_form_for @group,
+    url: user_maintain_group_path(var: "kick"), method: :put do |g| %>
+    <% @all_member.each do |gu| %>
+    <ul>
       <%= check_box_tag 'group_user_ids[]', gu.id %>
       <%= User.find(gu.user_id).name %>
-    </ul>    
-    <% end %>  
+    </ul>
+    <% end %>
     <%= g.button :submit ,"確認移除", class: "btn btn-danger" %>
   <% end %>
   <hr size="5" color="linen">
 
-  <!--Manager-->  
-  管理員:(至少需有一人) 
-  <%= simple_form_for @group, 
-    url: user_maintain_group_path(var: "own"), method: :put do |g| %>  
-    <% @all_member.each do |gu| %>    
-    <ul>    
+  <!--Manager-->
+  管理員:(至少需有一人)
+  <%= simple_form_for @group,
+    url: user_maintain_group_path(var: "own"), method: :put do |g| %>
+    <% @all_member.each do |gu| %>
+    <ul>
       <%= check_box_tag 'group_user_ids[]', gu.id, gu.role=="admin" %>
       <%= User.find(gu.user_id).name %>
-    </ul>    
-    <% end %>  
+    </ul>
+    <% end %>
     <%= g.button :submit ,"確認", class: "btn btn-warning" %>
   <% end %>
 
 </font>
-<% end %> 
+<% end %>
