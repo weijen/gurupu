@@ -16,5 +16,16 @@
     input[type="submit"] {
       margin-top: -10px;
     }
+
+    input.hidden {
+      display: none;
+    }
+  }
+}
+
+.suggestion {
+  img {
+    width: 24px;
+    height: 24px;
   }
 }
