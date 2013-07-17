@@ -102,7 +102,7 @@
           <td> <%= ex.name %> </td> 
           <td> <dd class="text-right"><%= ex.cost %></dd> </td> 
           <td> 
-            <% if @group.is_active? && @group.owner.include?(current_user) %>
+            <% if @group.is_active? && @group.owners.include?(current_user) %>
               <button class="btn btn-link btn-mini"> 
                 <i class="icon-remove"></i>
                 <!--link destroy expense-->

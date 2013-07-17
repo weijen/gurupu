@@ -28,7 +28,7 @@
           </td>
           <td> 
             <% if (@group.state == 'active') &&
-                  (@group.owner.include?(current_user) || e.user_id==current_user.id) %>
+                  (@group.owners.include?(current_user) || e.user_id==current_user.id) %>
               <%=link_to 'delete', action:'destroy', method: :delete, id: e %> 
             <% end %>
           </td>
