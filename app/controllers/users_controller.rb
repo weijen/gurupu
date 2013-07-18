@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   before_action :set_group
-  before_action :set_user, only: [:update, :destroy, :role, :confirm]
-  before_action :check_permission, only: [:destroy, :role, :confirm]
+  before_action :set_user, only: [:update, :destroy, :confirm]
+  before_action :set_group_user, only: [:become_owner, :become_member, :confirm]
+  before_action :check_permission, only: [:destroy, :confirm]
 
   def index
     @is_owner = current_user.is_owner_of?(@group)
@@ -17,37 +18,41 @@ class UsersController < ApplicationController
     redirect_to group_expenses_path(@group)
   end
 
-  def role
-    group_user = GroupUser.find_by(group: @group, user: @user)
-
-    if @user.id == current_user.id && group_user.role.admin?
-      if @group.owners.size == 1
-        flash[:error] = '你是唯一的管理員'
-        return redirect_to group_users_path(@group)
-      end
-      group_user.role = :member
-    elsif group_user.role.member?
-      group_user.role = :admin
-    end
-    if group_user.save
+  def become_owner
+    if @group_user.update(role: :admin)
       flash[:notice] = 'Successful update'
     else
       flash[:error] = 'Fail'
     end
-    redirect_to group_users_path(@group)
+    redirect_to group_users_path(@group_user.group)
+  end
+
+  def become_member
+    if @group_user.user_id == current_user.id && group_user.role.admin?
+      if @group.owners.size == 1
+        flash[:error] = '你是唯一的管理員'
+      else
+        group_user.role = :member
+        if group_user.save
+          flash[:notice] = 'Successful update'
+        else
+          flash[:error] = 'Fail'
+        end
+      end
+    end
+    redirect_to group_users_path(@group_user.group)
   end
 
   def confirm
-    group_user = GroupUser.find_by(group: @group, user: @user)
-    if group_user.state.wait?
-      group_user.state = :join
+    if @group_user.state.wait?
+      @group_user.state = :join
     end
-    if group_user.save
+    if @group_user.save
       flash.now[:notice] = 'Successful update'
     else
       flash.now[:error] = 'Fail'
     end
-    redirect_to group_users_path(@group)
+    redirect_to group_users_path(@group_user.group)
   end
 
   def destroy
@@ -72,6 +77,10 @@ class UsersController < ApplicationController
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def set_group_user
+    @group_user = GroupUser.find_by(group: set_group, user_id: params[:id])
   end
 
   def check_permission

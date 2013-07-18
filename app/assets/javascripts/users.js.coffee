@@ -15,14 +15,19 @@ jQuery ->
     minLength: 2
     source: (query, process) ->
       $.get '/users/typeahead', name: query, (data) ->
-        nameList = []
+        uidList = []
+        window.uidMap = {}
         for item in data
-          nameList.push(item.name)
-        process(nameList)
+          uidList.push(item.uid)
+          window.uidMap[item.uid] = item
+        process(uidList)
+    matcher: (item) ->
+      uidMap[item].name.match(new RegExp(this.query.trim(), 'i')) != null
     updater: (item) ->
-      console.log(item)
-      item
+      # To-Do save uid
+      window.uidMap[item].name
     highlighter: (item) ->
-      console.log this
-      '<div class="suggestion"><img class="img-rounded" src="https://graph.facebook.com/100000134650492/picture">' +
-      ' <span class="">' + item + '</span></div>'
+      name = window.uidMap[item].name
+      '<div class="suggestion">' +
+      '<img class="img-rounded" src="https://graph.facebook.com/' + item + '/picture">' +
+      ' <span class="">' + name + '</span></div>'

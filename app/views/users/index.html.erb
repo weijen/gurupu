@@ -1,7 +1,6 @@
 <div class="row">
   <div class="span8">
-    <h2><%= @group.name %></h2>
-    <hr />
+    <%= render 'shared/group_header' %>
   <% if @is_owner %>
     <div class="invite-block">
     <%= form_tag group_invitation_path(@group) do |f| %>
@@ -11,8 +10,8 @@
       <%= text_field_tag 'email', nil, class: 'hidden',placeholder: '輸入Email' %>
       <%= submit_tag '確認', class: 'btn btn-primary' %>
     <% end %>
-  <% end %>
     </div>
+  <% end %>
   <% if @group.members.any? %>
     <table class="table">
     <% @group.members.each do |member| %>
@@ -30,19 +29,21 @@
         <% if @is_owner %>
           <% case %>
           <% when member.id == current_user.id %>
-            <%= link_to '退出管理員', role_group_user_path(@group, member), method: :patch, class: 'btn', confirm: '確定退出管理員?' %>
+            <%= link_to '退出管理員', become_member_group_user_path(@group, member),
+              method: :patch, class: 'btn', confirm: '確定退出管理員?' %>
           <% when member.is_waiting?(@group) %>
             <%= link_to '接受', confirm_group_user_path(@group, member),
-            method: :patch, class: 'btn' %>
+            method: :patch, class: 'btn', confirm: '確定接受入團申請?' %>
           <% when !member.is_owner_of?(@group) %>
-            <%= link_to '指定為管理員', role_group_user_path(@group, member),
-            method: :patch, class: 'btn', confirm: '確定指定此使用者為管理員?' %>
+            <%= link_to '指定為管理員', become_owner_group_user_path(@group, member),
+              method: :patch, class: 'btn', confirm: '確定指定此使用者為管理員?' %>
           <% end %>
         <% end %>
         </td>
         <td>
         <% if @is_owner && !member.is_owner_of?(@group) %>
-          <%= link_to '刪除', [@group, member], method: :delete, class: 'btn', confirm: '確定刪除此團員?' %>
+          <%= link_to '刪除', [@group, member], method: :delete,
+            class: 'btn btn-danger', confirm: '確定刪除此團員?' %>
         <% end %>
         </td>
         <td>

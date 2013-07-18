@@ -5,8 +5,11 @@ Gurupu::Application.routes.draw do
   resources :groups do
     resource :state, only: [:create, :delete]
     resources :users, only: [:index, :new, :create, :destroy] do
-      patch :confirm, on: :member
-      patch :role, on: :member
+      member do
+        patch :confirm
+        patch 'become-owner'=> 'users#become_owner', as: 'become_owner'
+        patch 'become-member'=> 'users#become_member', as: 'become_member'
+      end
     end
     resource :invitation, only: [:create]
     resources :tags, except: [:index]
