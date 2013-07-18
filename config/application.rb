@@ -6,6 +6,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)
 
+# For bootstrap-helper
+SITE_NAME = "Gurupu"
+
 module Gurupu
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.

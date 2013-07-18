@@ -1,0 +1,9 @@
+<div class="group-header clearfix">
+  <h2 class="pull-left"><%= @group.name %></h2>
+  <%= render_list class: 'nav nav-tabs pull-right' do |li|
+    li << link_to('帳目一覽', group_expenses_path(@group))
+    li << link_to('瀏覽報表', summary_group_expenses_path(@group))
+    li << link_to('團員名單', group_users_path(@group))
+    li << link_to('設定', '#')
+  end %>
+</div>
