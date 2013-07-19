@@ -1,87 +1,68 @@
-<% gp_status = { active: "活動中", frozen: "凍結報帳" } %>
+<% gp_status = { active: "開放報帳", frozen: "凍結報帳" } %>
+<% gp_status = gp_status.with_indifferent_access %>
 
-<% if @group.owners.include?(current_user) %>
-<font size=4>
-  <!--Group-->
-  團體狀態:
-  <%= gp_status[@group.state.to_sym] %>
-  <font size=2 color=darkcyan>　　　　　　　變更為</font>
-  <button class="btn btn-warning" type="button">
-    <% if @group.state=="active" %>
-      <% sts_name=gp_status.values[1] %>
-    <% else %>
-      <% sts_name=gp_status.values[0] %>
-    <% end %>
-    <%=link_to sts_name,state_change_group_path,method: :put %>
-  </button>
-  <br>
-  <%= render 'form' %>
+<% if @group.group_users.find_by_user_id(current_user.id).join? %>
 
-  <!--New Tag-->
-  <%= simple_form_for Tag.new,
-      url: add_tag_group_path(var: "add"),
-      method: :put do |t| %>
-    <%= t.input :name, input_html: {class: "span3"}, label: "新增類別" %>
-    <%= t.button :submit ,"新增", class: "btn btn-success" %>
-  <% end %>
-  <hr size="5" color="linen">
+	<% is_owner=current_user.is_owner_of?(@group) %>
 
-  <!--Add new member-->
-  待審核團員:
-  <% if @wait_user.count!=0 %>
-    <%= simple_form_for @group,
-      url: user_maintain_group_path(var: "add"),
-      method: :put do |g| %>
-      <% @wait_user.each do |gu| %>
-      <ul>
-        <%= check_box_tag 'group_user_ids[]', gu.id %>
-        <%= User.find(gu.user_id).name %>
-      </ul>
-      <% end %>
-      <%= g.button :submit ,"確認加入", class: "btn btn-info" %>
-    <% end %>
-  <% else %>
-    無
-  <% end %>
-  <hr size="5" color="linen">
+	<!--for owner-->
+	<% if is_owner %>
+		<%= render 'form' %>
+	<% end %>
 
-  <!--Invite new member-->
-  <%= form_tag invite_group_path, multipart: true do %>
-  <div class="input-append">
-    <span class="add-on"><i class="icon-envelope"></i></span>
-    <!--input class="span3" id="inputEmail" type="text"-->
-    <%= text_field_tag "mailto", nil, :class => 'span3' %>
-    <%= submit_tag '邀請加入此團', :class => 'btn btn-primary' %>
-    <!--button class="btn btn-primary" type="button">邀請加入此團</button-->
-  </div>
-  <hr size="5" color="linen">
-  <% end %>
-  <!--Remove member-->
-  團員移除:
-  <%= simple_form_for @group,
-    url: user_maintain_group_path(var: "kick"), method: :put do |g| %>
-    <% @all_member.each do |gu| %>
-    <ul>
-      <%= check_box_tag 'group_user_ids[]', gu.id %>
-      <%= User.find(gu.user_id).name %>
-    </ul>
-    <% end %>
-    <%= g.button :submit ,"確認移除", class: "btn btn-danger" %>
-  <% end %>
-  <hr size="5" color="linen">
+	<!--for member-->
+	<% if !is_owner %>
+		<font size="3"> 
+		<dl class="dl-horizontal">
+		  <dt>團體名稱</dt>
+		  <dd><%= @group.name %></dd>
+		  <br>
 
-  <!--Manager-->
-  管理員:(至少需有一人)
-  <%= simple_form_for @group,
-    url: user_maintain_group_path(var: "own"), method: :put do |g| %>
-    <% @all_member.each do |gu| %>
-    <ul>
-      <%= check_box_tag 'group_user_ids[]', gu.id, gu.role=="admin" %>
-      <%= User.find(gu.user_id).name %>
-    </ul>
-    <% end %>
-    <%= g.button :submit ,"確認", class: "btn btn-warning" %>
-  <% end %>
+		  <dt>簡述</dt>
+		  <dd><%= simple_format(@group.description) %></dd>
+			<br>
 
-</font>
+			<dt>團體狀態</dt>
+		  <dd><%= gp_status[@group.state] %></dd>
+		  <br>  
+		</dl>
+		</font>
+	<% end %>
+
+	<!--chaneg group state-->
+	<% if is_owner %>
+		<table border="1" width="60%" style="border-color:orange" 
+		class="offset1 table-bordered">
+		  <tr>
+		  	<th width="20%" style="color:white" bgcolor=orange>變更狀態</th>	  	
+		  	<% if @group.frozen? %>
+			    <td style="font-size:11pt">目前狀態為凍結報帳，點擊開放報帳可恢復報帳功能
+						<%= link_to '開放報帳', state_change_group_path(state: "active"), method: :patch, class: 'btn btn-success pull-right' %>			    
+			    </td>     
+			  <% else %>
+			    <td style="font-size:11pt">注意，將狀態更改為凍結報帳後所有團員將無法報帳!
+						<%= link_to '凍結報帳', state_change_group_path(state: "frozen"), method: :patch, class: 'btn btn-warning pull-right' %>	
+			    </td>  	    
+		    <% end %>
+		  </tr>
+		</table>
+		<br>
+	<% end %>
+
+	<!--quit group-->
+	<table border="1" width="60%" style="border-color:firebrick" class="offset1 table-bordered">
+	  <tr>
+	    <th width="20%" style="color:white" bgcolor=firebrick>退出團體</th>      
+	    <td style="font-size:11pt">注意，退出團體後無法自行重新加入!
+				<%if @group.group_users.where(state:"join").size==1 %>
+	        <% msg='您是本團體最後一位成員，確認退團後此團體將被刪除，是否退出?' %>
+				<% else %>
+					<% msg='是否確定退團?' %>
+				<% end %>
+				<%= link_to '確認退出', quit_group_path, method: :patch, class: 'btn btn-danger pull-right', confirm: msg %>
+	    </td>     
+	  </tr>
+	</table>
+	<br>
+
 <% end %>

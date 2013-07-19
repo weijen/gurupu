@@ -3,6 +3,8 @@ Gurupu::Application.routes.draw do
   get "/signout" => "sessions#destroy", :as => :signout
   get "/login" => "sessions#index"
   resources :groups do
+    patch :state_change, on: :member
+    patch :quit, on: :member
     resource :state, only: [:create, :delete]
     resources :users, only: [:index, :new, :create, :destroy] do
       member do

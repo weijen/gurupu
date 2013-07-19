@@ -1,25 +1,52 @@
-<%= simple_form_for @group do |g| %>
-  <%= g.input :name,input_html: {class: "span4"},label: "團體名稱" %>  
-  <%= g.input :description,input_html: {class: "span9"},label: "描述" %>  
+<%= simple_form_for @group, html: {class: "form-horizontal form-inline"} do |g| %>  
+  <%= g.input :name,input_html: {class: "span5"},label: "團體名稱" %>  
+  <%= g.input :description,input_html: {class: "span5", rows: "5"}, label: "簡述" %>  
 
-  類別:
-  <% @group_sel_tag.each do |tag| %>    
-    <%= check_box_tag 'tag_ids[]', tag.id, 
-        GroupTag.find_by_group_id_and_tag_id(@group.id,tag.id) %>
-    <%= tag.name %>
-  <% end %>
-  <br><br>
+  <div class="control-group">
+  <label class="control-label">
+    帳目支出分類
+  </label>
+  <div class="controls">  
+  <div class="row">
+  <div class="span4">
+  <div class="row">
+  <font size="3">  
+    <% @group_sel_tag.each do |tag| %>          
+      <div class="span2">
+      <%= check_box_tag 'tag_ids[]', tag.id, 
+          GroupTag.find_by_group_id_and_tag_id(@group.id,tag.id) %>
+      <%= tag.name %>      
+      </div>      
+    <% end %> 
+  </font>
+  </div>
+  </div>
+  </div>
+  </div>  
+  </div>    
 
-  <% if controller.action_name == "new" %>
-    <%= g.button :submit ,"建立新團", class: "btn btn-success" %>
+  <%= link_to "　取消　", :back, class: "btn offset2"%>
+  &nbsp &nbsp
+  <% if controller.action_name == "new" ||
+        controller.action_name == "create" %>        
+    <%= g.button :submit ,"　建立　", class: "btn-info" %>
   <% else %>      
-    <%= g.button :submit ,"確認修改", class: "btn btn-warning" %>
-  <% end %>    
+    <%= g.button :submit ,"　修改　", class: "btn-info" %>
+  <% end %>      
 <% end %>
 
-
-
-
+<!--New Tag-->
+<%= simple_form_for Tag.new,
+    html: {class: "form-horizontal form-inline"}, 
+    url: group_tags_path(@group),
+    method: :post do |t| %>
+  <div class="control-group">
+  <div class="controls">   
+    <%= t.input_field :name, input_html: {class: "span3"}, label: "", placeholder:"輸入自訂類別" %>
+    <%= image_submit_tag("add.png") %>
+  </div>
+  </div>  
+<% end %>
 
 
 

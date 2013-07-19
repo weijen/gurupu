@@ -1,85 +1,56 @@
 class GroupsController < ApplicationController
-  #maca before_action :set_group, only: [:show, :edit, :update, :destroy]
-  prepend_before_action :set_group, except: [:new, :create]  #maca
-  before_action :select_tag, only: [:new, :create, :edit, :update, :index]  #maca
+  prepend_before_action :set_group, except: [:new, :create]  
+  before_action :select_tag, only: [:new, :create, :edit, :update, :index]  
 
   def index
-    @groups = current_user.groups #maca
+    @groups = current_user.groups
   end
-
-	#maca add start
+ 
   def state_change
-    @group.change_state
-    redirect_to edit_group_path
-  end
-
-  def user_maintain
-    if params[:var]=="add"
-      (params[:group_user_ids] || []).each do |i|
-        GroupUser.find(i).change_state('join')
-      end
-    elsif params[:var]=="kick"
-      (params[:group_user_ids] || []).each do |i|
-        GroupUser.find(i).delete
-      end
-    elsif params[:var]=="own"
-      old_owner=@group.group_users.where(role: 'admin')
-      old_owner.each do |gu|
-        if !((params[:group_user_ids] || []).include?(gu.id.to_s))
-          gu.change_role('')
-        end
-      end
-      (params[:group_user_ids] || []).each do |i|
-        if !(old_owner.include?(GroupUser.find(i)))
-          GroupUser.find(i).change_role('admin')
-        end
-      end
-    end
-    redirect_to edit_group_path
-  end
-
-  def add_tag
-    tag_name=params[:tag][:name].lstrip.rstrip
-    if Tag.find_by_name(tag_name)==nil
-      tag_id = Tag.create(name:tag_name, is_default:0).id
+    if @group.change_state(params[:state])
     else
-      tag_id = Tag.find_by_name(tag_name)
-    end
-    if GroupTag.find_by_tag_id(tag_id)==nil
-      GroupTag.create(group_id: @group.id, tag_id: tag_id)
-    end
+      flash[:error] = 'Status change fail !!'
+    end      
     redirect_to edit_group_path
   end
 
-  def join_group
-    @group.add_member(current_user)
-    redirect_to :back
+  def quit
+    trashed = (@group.group_users.where(state:"join").size==1)
+    if (!trashed) && (current_user.is_owner_of?(@group)) && (@group.owners.size == 1)
+      flash[:error] = "您是本團唯一的管理員，需指派繼任管理員才可退出團體"
+      redirect_to :back
+      return
+    end
+    msg=""
+    if trashed
+      @group.change_state('trashed')
+      msg="and drop "
+    end
+    current_user.quit!(@group)
+
+    flash[:notice] = "Quit "+msg+@group.name+" success" 
+    redirect_to groups_path
   end
-	#maca add end
 
   def new
     @group = Group.new
   end
 
-  def create
-    @group = Group.new(group_params)
-    #maca @group.cost = 'active'
-    @group.state = 'active' #maca
+  def create  
+    @group = Group.new(group_params)  
+    @group.state = 'active' 
     if @group.save
-      #maca redirect_to @group
-      #maca add start
       @group.add_owner(current_user)
       (params[:tag_ids] || []).each { |i| @group.tags << Tag.find(i) }
-      redirect_to groups_path
-      #maca add end
+      
+      flash[:notice] = "Create Group success" 
+      redirect_to edit_group_path(@group)
     else
       render action: 'new'
     end
   end
 
   def edit
-    @wait_user=@group.group_users.where(state: 'wait')     	#maca
-    @all_member=@group.group_users.where(state: 'join')   #maca
   end
 
   def show
@@ -90,8 +61,6 @@ class GroupsController < ApplicationController
 
   def update
     if @group.update(group_params)
-      #maca redirect_to @group
-      #maca add start
       #----------------------------------------
       # group tags maintain
       # if expenses exist, cannot remove tag
@@ -104,13 +73,13 @@ class GroupsController < ApplicationController
         else
           if !(@group.expenses.find_by_tag_id(tag.id))
             if @group.tags.include?(tag)
-              GroupTag.find_by_group_id_and_tag_id(@group.id, tag.id).delete
+              @group.tags.delete(tag)
             end
           end
         end
       end
+      flash[:notice] = "Update Group success" 
       redirect_to edit_group_path
-      #maca add end
     else
       render action: 'edit'
     end
@@ -122,14 +91,12 @@ class GroupsController < ApplicationController
   end
 
   private
-  #maca add start
   def select_tag
     @group_sel_tag = Tag.all.where(is_default: true)
     if @group != nil
       @group_sel_tag += @group.tags.where(is_default: false)
     end
   end
-  #maca add end
 
   def set_group
     @group = Group.find_by_slug(params[:id])
