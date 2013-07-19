@@ -35,23 +35,8 @@ class Group < ActiveRecord::Base
   def editable_by?(user)
   end
 
-  #maca add start
-  def is_active?
-    self[:state] == 'active'
-  end
-
-  def add_member(user)
-    group_users.create(user: user, role: '', state: 'wait')
-  end
-
-  def change_state
-    if self[:state] == 'frozen'
-      self[:state] = 'active'
-    else
-      self[:state] = 'frozen'
-    end
-    self.save
-  end
-  #maca add end
-
+  def change_state(state)
+    self[:state] = state
+    self.save    
+  end  
 end
