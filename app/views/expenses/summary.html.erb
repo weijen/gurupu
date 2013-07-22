@@ -22,7 +22,7 @@
       </ul>
     </div>
     <% if @sel_type=="all" %>
-      <%= image_tag('table_excel.png', class: "btn-link pull-right", onclick: "tableToExcel('table3')") %>
+      <%= link_to(image_tag('table_excel.png', class: "pull-right"), action:'export', format: 'csv') %> 
     <% end %>  
     </h4>
 
@@ -97,28 +97,31 @@
           </tr>
         </thead>
         <tbody>
-          <% @ex_sum.each do |ex| %>      
-            <tr>
-              <td> <%= ex.date.strftime('%Y-%m-%d') %> </td>
-              <td> <%= ex.user.name %> </td>
-              <td> <%= ex.tag.name %> </td>
-              <td> <%= ex.name %> </td> 
-              <td> <dd class="text-right"><%= ex.cost %></dd> </td> 
-              <td> 
-                <% if @group.active? && @group.owners.include?(current_user) %>
-                  <button class="btn btn-link btn-mini"> 
-                    <i class="icon-remove"></i>
-                    <!--link destroy expense-->
-                  </button>
-                <% end %>
-              </td> 
-            </tr>
+          <% $ex_sum_all.each do |type, date, member, tag, item, cost| %>
+            <% if type==1 %>
+              <tr>
+                <td> <%= date %> </td>
+                <td> <%= member %> </td>
+                <td> <%= tag %> </td>
+                <td> <%= item %> </td> 
+                <td> <dd class="text-right"><%= cost %></dd> </td> 
+                <td> 
+                  <% if @group.active? && @group.owners.include?(current_user) %>
+                    <button class="btn btn-link btn-mini"> 
+                      <i class="icon-remove"></i>
+                      <!--link destroy expense-->
+                    </button>
+                  <% end %>
+                </td> 
+              </tr>
+            <% elsif type==2 %>   
+              <tr bgcolor=oldlace>
+                <td colspan="4"> 總計 </td> 
+                <td> <dd class="text-right"><%= cost %></dd> </td> 
+                <td></td>
+              </tr>       
+            <% end %> 
           <% end %> 
-          <tr bgcolor=oldlace>
-            <td colspan="4"> 總計 </td> 
-            <td> <dd class="text-right"><%= @ex_sum.sum {|ex| ex.cost} %></dd> </td> 
-            <td></td>
-          </tr>            
         </tbody>
       </table>
     <% end %>

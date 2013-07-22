@@ -30,7 +30,12 @@ class ExpensesController < ApplicationController
     if @sel_type=='all'
       str+=" AND tag_id = " + params[:sel_tag].to_s if @sel_tag != "all"
       str+=" AND user_id = " + params[:sel_user].to_s if @sel_user != "all"
-      @ex_sum = @group.expenses.all(conditions: [str, @start_day, @end_day])
+      ex_sum = @group.expenses.all(conditions: [str, @start_day, @end_day])
+      $ex_sum_all=[]
+      ex_sum.each do |ex|
+        $ex_sum_all<<[1,ex.date.strftime('%Y-%m-%d'), ex.user.name, ex.tag.name, ex.name, ex.cost]
+      end
+      $ex_sum_all << [2,'sum','','','',ex_sum.sum {|ex| ex.cost}]      
     else
       @ex_sum_all=[]
       @ex_sum = @group.expenses.all(select: "user_id,tag_id, SUM(cost) costs",
@@ -64,6 +69,20 @@ class ExpensesController < ApplicationController
       # total_costs
       total_costs = @ex_sum1.sum {|key1, costs| costs}
       @ex_sum_all<<[2, 0, 0, total_costs, '', '']
+    end
+  end
+
+  def export
+    respond_to do |format|    
+      format.csv do    
+        csv_string = CSV.generate do |csv|
+          csv << ["\xEF\xBB\xBFdate", "member", "tag", "item", "cost"]
+          $ex_sum_all.each do |type, date, member, tag, item, cost| 
+            csv << [date, member, tag, item, cost]
+          end
+        end
+        render :text => csv_string
+      end
     end
   end
 
