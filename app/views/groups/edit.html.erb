@@ -1,68 +1,76 @@
-<% gp_status = { active: "開放報帳", frozen: "凍結報帳" } %>
-<% gp_status = gp_status.with_indifferent_access %>
+<div class="row">
+  <div class="span8">
+    <%= render 'shared/group_header' %>
 
-<% if @group.group_users.find_by_user_id(current_user.id).join? %>
+		<% gp_status = { active: "開放報帳", frozen: "凍結報帳" } %>
+		<% gp_status = gp_status.with_indifferent_access %>
 
-	<% is_owner=current_user.is_owner_of?(@group) %>
+		<% if @group.group_users.find_by_user_id(current_user.id).join? %>
 
-	<!--for owner-->
-	<% if is_owner %>
-		<%= render 'form' %>
-	<% end %>
+			<% is_owner=current_user.is_owner_of?(@group) %>
 
-	<!--for member-->
-	<% if !is_owner %>
-		<font size="3"> 
-		<dl class="dl-horizontal">
-		  <dt>團體名稱</dt>
-		  <dd><%= @group.name %></dd>
-		  <br>
+			<!--for owner-->
+			<% if is_owner %>
+				<%= render 'form' %>
+			<% end %>
 
-		  <dt>簡述</dt>
-		  <dd><%= simple_format(@group.description) %></dd>
+			<!--for member-->
+			<% if !is_owner %>
+				<font size="3"> 
+				<dl class="dl-horizontal">
+				  <dt>團體名稱</dt>
+				  <dd><%= @group.name %></dd>
+				  <br>
+
+				  <dt>簡述</dt>
+				  <dd><%= simple_format(@group.description) %></dd>
+					<br>
+
+					<dt>團體狀態</dt>
+				  <dd><%= gp_status[@group.state] %></dd>
+				  <br>  
+				</dl>
+				</font>
+			<% end %>
+
+			<!--chaneg group state-->
+			<% if is_owner %>
+				<table border="1" width="85%" style="border-color:orange" 
+				class="offset1 table-bordered">
+				  <tr>
+				  	<th width="15%" style="color:white" bgcolor=orange>變更狀態</th>	  	
+				  	<% if @group.frozen? %>
+					    <td style="font-size:11pt">目前狀態為凍結報帳，點擊開放報帳可恢復報帳功能
+								<%= link_to '開放報帳', state_change_group_path(state: "active"), method: :patch, class: 'btn btn-success pull-right' %>			    
+					    </td>     
+					  <% else %>
+					    <td style="font-size:11pt">注意，將狀態更改為凍結報帳後所有團員將無法報帳!
+								<%= link_to '凍結報帳', state_change_group_path(state: "frozen"), method: :patch, class: 'btn btn-warning pull-right' %>	
+					    </td>  	    
+				    <% end %>
+				  </tr>
+				</table>
+				<br>
+			<% end %>
+
+			<!--quit group-->
+			<table border="1" width="85%" style="border-color:firebrick" class="offset1 table-bordered">
+			  <tr>
+			    <th width="15%" style="color:white" bgcolor=firebrick>退出團體</th>      
+			    <td style="font-size:11pt">注意，退出團體後無法自行重新加入!
+						<%if @group.group_users.where(state:"join").size==1 %>
+			        <% msg='您是本團體最後一位成員，確認退團後此團體將被刪除，是否退出?' %>
+						<% else %>
+							<% msg='是否確定退團?' %>
+						<% end %>
+						<%= link_to '確認退出', quit_group_path, method: :patch, class: 'btn btn-danger pull-right', confirm: msg %>
+			    </td>     
+			  </tr>
+			</table>
 			<br>
 
-			<dt>團體狀態</dt>
-		  <dd><%= gp_status[@group.state] %></dd>
-		  <br>  
-		</dl>
-		</font>
-	<% end %>
+		<% end %>
 
-	<!--chaneg group state-->
-	<% if is_owner %>
-		<table border="1" width="60%" style="border-color:orange" 
-		class="offset1 table-bordered">
-		  <tr>
-		  	<th width="20%" style="color:white" bgcolor=orange>變更狀態</th>	  	
-		  	<% if @group.frozen? %>
-			    <td style="font-size:11pt">目前狀態為凍結報帳，點擊開放報帳可恢復報帳功能
-						<%= link_to '開放報帳', state_change_group_path(state: "active"), method: :patch, class: 'btn btn-success pull-right' %>			    
-			    </td>     
-			  <% else %>
-			    <td style="font-size:11pt">注意，將狀態更改為凍結報帳後所有團員將無法報帳!
-						<%= link_to '凍結報帳', state_change_group_path(state: "frozen"), method: :patch, class: 'btn btn-warning pull-right' %>	
-			    </td>  	    
-		    <% end %>
-		  </tr>
-		</table>
-		<br>
-	<% end %>
-
-	<!--quit group-->
-	<table border="1" width="60%" style="border-color:firebrick" class="offset1 table-bordered">
-	  <tr>
-	    <th width="20%" style="color:white" bgcolor=firebrick>退出團體</th>      
-	    <td style="font-size:11pt">注意，退出團體後無法自行重新加入!
-				<%if @group.group_users.where(state:"join").size==1 %>
-	        <% msg='您是本團體最後一位成員，確認退團後此團體將被刪除，是否退出?' %>
-				<% else %>
-					<% msg='是否確定退團?' %>
-				<% end %>
-				<%= link_to '確認退出', quit_group_path, method: :patch, class: 'btn btn-danger pull-right', confirm: msg %>
-	    </td>     
-	  </tr>
-	</table>
-	<br>
-
-<% end %>
+  </div>
+  <%= render 'shared/groups_sidebar' %>
+</div>

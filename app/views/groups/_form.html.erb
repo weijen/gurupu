@@ -36,18 +36,20 @@
 <% end %>
 
 <!--New Tag-->
-<%= simple_form_for Tag.new,
-    html: {class: "form-horizontal form-inline"}, 
-    url: group_tags_path(@group),
-    method: :post do |t| %>
-  <div class="control-group">
-  <div class="controls">   
-    <%= t.input_field :name, input_html: {class: "span3"}, label: "", placeholder:"輸入自訂類別" %>
-    <%= image_submit_tag("add.png") %>
-  </div>
-  </div>  
+<% if controller.action_name != "new" &&
+      controller.action_name != "create" %>
+  <%= simple_form_for Tag.new,
+      html: {class: "form-horizontal form-inline"}, 
+      url: group_tags_path(@group),
+      method: :post do |t| %>
+    <div class="control-group">
+    <div class="controls">   
+      <%= t.input_field :name, input_html: {class: "span3"}, label: "", placeholder:"輸入自訂分類" %>
+      <%= image_submit_tag("add.png") %>
+    </div>
+    </div>  
+  <% end %>
 <% end %>
-
 
 
 

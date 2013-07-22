@@ -1,125 +1,131 @@
-<%= render 'gp' %>
-<%# @group.group_users.find_by_user_id(current_user.id).join? %>
+<div class="row">
+  <div class="span8">
+    <%= render 'shared/group_header' %>
+    <%# @group.group_users.find_by_user_id(current_user.id).join? %>
 
-<% sel = {utt: "團員支出表",utc: "團員支出比例圖",
-          tut: "分類支出表",tuc: "分類支出比例圖",all: "總帳本"} %>
-<% sel = sel.with_indifferent_access %>
+    <% sel = {utt: "團員支出表",utc: "團員支出比例圖",
+              tut: "分類支出表",tuc: "分類支出比例圖",all: "總帳本"} %>
+    <% sel = sel.with_indifferent_access %>
 
-<h4>請選擇欲瀏覽報表:
-<div class="btn-group">
-  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-    <%=sel[@sel_type]%>
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu">
-    <li><%=link_to sel["utt"], action:'summary', var: "utt", class: "bun"%></li>
-    <li><%=link_to sel["utc"], action:'summary', var: "utc", class: "bun"%></li> 
-    <li><%=link_to sel["tut"], action:'summary', var: "tut", class: "bun"%></li> 
-    <li><%=link_to sel["tuc"], action:'summary', var: "tuc", class: "bun"%></li>
-    <li><%=link_to sel["all"], action:'summary', var: "all", class: "bun"%></li>
-  </ul>
-</div>
-<% if @sel_type=="all" %>
-  <%= image_tag('table_excel.png', class: "btn-link pull-right", onclick: "tableToExcel('table3')") %>
-<% end %>  
-</h4>
-
-
-<%= simple_form_for @group, 
-      url: summary_group_expenses_path, 
-      method: :get do |g| %>  
-  <div class="well well-small">   
-    <h4>帳目篩選時間:
-    <input class="input-small" type="text" value=<%=@start_day%> data-date-format="yyyy-mm-dd" id="dp1" name="dp1">
-    至
-    <input class="input-small" type="text" value=<%=@end_day%> data-date-format="yyyy-mm-dd" id="dp2" name="dp2">
-    <input type="hidden" value=<%=@sel_type%> id="var" name="var">
-
+    <h4>請選擇欲瀏覽報表:
+    <div class="btn-group">
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        <%=sel[@sel_type]%>
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><%=link_to sel["utt"], action:'summary', var: "utt", class: "bun"%></li>
+        <li><%=link_to sel["utc"], action:'summary', var: "utc", class: "bun"%></li> 
+        <li><%=link_to sel["tut"], action:'summary', var: "tut", class: "bun"%></li> 
+        <li><%=link_to sel["tuc"], action:'summary', var: "tuc", class: "bun"%></li>
+        <li><%=link_to sel["all"], action:'summary', var: "all", class: "bun"%></li>
+      </ul>
+    </div>
     <% if @sel_type=="all" %>
-      分類:
-      <select name="sel_tag" id="sel_tag" class="span3">
-      <option value='all'> 全部分類 </option>
-      <% @group.tags.each do |t| %>
-        <% if t.id.to_s==@sel_tag %>
-          <option value=<%=t.id%> selected> <%= t.name %> </option>
-        <% else %>  
-          <option value=<%=t.id%>> <%= t.name %> </option>
-        <% end %>  
-      <% end %>
-      </select>
-
-      團員:
-      <select name="sel_user" id="sel_user" class="span2">
-      <option value='all'> 全部團員 </option>
-      <%# @group.members.each do |u| %>
-      <% (@group.expenses.select("distinct user_id")).each do |u| %>
-        <% if u.user_id.to_s==@sel_user %>
-          <option value=<%=u.user_id%> selected> <%= User.find(u.user_id).name %> </option>
-        <% else %>  
-          <option value=<%=u.user_id%>> <%= User.find(u.user_id).name %> </option>
-        <% end %>  
-      <% end %>
-      </select>
-    <% end %>         
-
-    <%= g.button :submit ,"確認", class: "btn btn-info" %>
+      <%= image_tag('table_excel.png', class: "btn-link pull-right", onclick: "tableToExcel('table3')") %>
+    <% end %>  
     </h4>
-  </div>    
-<% end %>
-
-<% if @sel_type=="utt" %>
-  <%= render 'sum_table' %>
-<% end %>
-
-<% if @sel_type=="tut" %>
-  <%= render 'sum_table2' %>
-<% end %>
-
-<% if @sel_type[2]=="c" %>
-  <%= render 'sum_chart' %>
-<% end %>
 
 
-<!-- table3 -->
-<% if @sel_type=="all" %>
-  <table class="table table-condensed" id="table3"> 
-    <thead>
-      <tr bgcolor=whitesmoke>
-        <th>日期</th>
-        <th>團友</th>
-        <th>分類</th>
-        <th>項目</th>
-        <th><dd class="text-right">金額</dd></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @ex_sum.each do |ex| %>      
-        <tr>
-          <td> <%= ex.date.strftime('%Y-%m-%d') %> </td>
-          <td> <%= ex.user.name %> </td>
-          <td> <%= ex.tag.name %> </td>
-          <td> <%= ex.name %> </td> 
-          <td> <dd class="text-right"><%= ex.cost %></dd> </td> 
-          <td> 
-            <% if @group.is_active? && @group.owners.include?(current_user) %>
-              <button class="btn btn-link btn-mini"> 
-                <i class="icon-remove"></i>
-                <!--link destroy expense-->
-              </button>
-            <% end %>
-          </td> 
-        </tr>
-      <% end %> 
-      <tr bgcolor=oldlace>
-        <td colspan="4"> 總計 </td> 
-        <td> <dd class="text-right"><%= @ex_sum.sum {|ex| ex.cost} %></dd> </td> 
-        <td></td>
-      </tr>            
-    </tbody>
-  </table>
-<% end %>
+    <%= simple_form_for @group, 
+          url: summary_group_expenses_path, 
+          method: :get do |g| %>  
+      <div class="well well-small">   
+        <h4>帳目篩選時間:
+        <input class="input-small" type="text" value=<%=@start_day%> data-date-format="yyyy-mm-dd" id="dp1" name="dp1">
+        至
+        <input class="input-small" type="text" value=<%=@end_day%> data-date-format="yyyy-mm-dd" id="dp2" name="dp2">
+        <input type="hidden" value=<%=@sel_type%> id="var" name="var">
 
+        <% if @sel_type=="all" %>
+          <br>
+          分類:
+          <select name="sel_tag" id="sel_tag" class="span3">
+          <option value='all'> 全部分類 </option>
+          <% @group.tags.each do |t| %>
+            <% if t.id.to_s==@sel_tag %>
+              <option value=<%=t.id%> selected> <%= t.name %> </option>
+            <% else %>  
+              <option value=<%=t.id%>> <%= t.name %> </option>
+            <% end %>  
+          <% end %>
+          </select>
+
+          團員:
+          <select name="sel_user" id="sel_user" class="span2">
+          <option value='all'> 全部團員 </option>
+          <%# @group.members.each do |u| %>
+          <% (@group.expenses.select("distinct user_id")).each do |u| %>
+            <% if u.user_id.to_s==@sel_user %>
+              <option value=<%=u.user_id%> selected> <%= User.find(u.user_id).name %> </option>
+            <% else %>  
+              <option value=<%=u.user_id%>> <%= User.find(u.user_id).name %> </option>
+            <% end %>  
+          <% end %>
+          </select>
+        <% end %>         
+
+        <%= g.button :submit ,"確認", class: "btn btn-info" %>
+        </h4>
+      </div>    
+    <% end %>
+
+    <% if @sel_type=="utt" %>
+      <%= render 'sum_table' %>
+    <% end %>
+
+    <% if @sel_type=="tut" %>
+      <%= render 'sum_table2' %>
+    <% end %>
+
+    <% if @sel_type[2]=="c" %>
+      <%= render 'sum_chart' %>
+    <% end %>
+
+
+    <!-- table3 -->
+    <% if @sel_type=="all" %>
+      <table class="table table-condensed" id="table3"> 
+        <thead>
+          <tr bgcolor=whitesmoke>
+            <th>日期</th>
+            <th>團友</th>
+            <th>分類</th>
+            <th>項目</th>
+            <th><dd class="text-right">金額</dd></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @ex_sum.each do |ex| %>      
+            <tr>
+              <td> <%= ex.date.strftime('%Y-%m-%d') %> </td>
+              <td> <%= ex.user.name %> </td>
+              <td> <%= ex.tag.name %> </td>
+              <td> <%= ex.name %> </td> 
+              <td> <dd class="text-right"><%= ex.cost %></dd> </td> 
+              <td> 
+                <% if @group.active? && @group.owners.include?(current_user) %>
+                  <button class="btn btn-link btn-mini"> 
+                    <i class="icon-remove"></i>
+                    <!--link destroy expense-->
+                  </button>
+                <% end %>
+              </td> 
+            </tr>
+          <% end %> 
+          <tr bgcolor=oldlace>
+            <td colspan="4"> 總計 </td> 
+            <td> <dd class="text-right"><%= @ex_sum.sum {|ex| ex.cost} %></dd> </td> 
+            <td></td>
+          </tr>            
+        </tbody>
+      </table>
+    <% end %>
+
+  </div>
+  <%= render 'shared/groups_sidebar' %>
+</div>
 
 <script type="text/javascript">
   $(function() {
