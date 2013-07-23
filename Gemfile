@@ -33,6 +33,7 @@ gem 'anjlab-bootstrap-rails', '>= 2.3', :require => 'bootstrap-rails'
 gem 'enumerize'
 gem 'bootstrap-datepicker-rails'
 gem 'bootstrap_helper'
+gem "ransack", github: "ernie/ransack", branch: "rails-4"
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

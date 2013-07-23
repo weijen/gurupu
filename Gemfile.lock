@@ -1,3 +1,13 @@
+GIT
+  remote: git://github.com/ernie/ransack.git
+  revision: 43fff052ca7a850103c2ac122c99541cd34cf48d
+  branch: rails-4
+  specs:
+    ransack (0.7.3)
+      actionpack (~> 4.0.0)
+      activerecord (~> 4.0.0)
+      polyamorous (~> 0.6.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -89,6 +99,8 @@ GEM
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
+    polyamorous (0.6.3)
+      activerecord (>= 3.0)
     polyglot (0.3.3)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
@@ -155,6 +167,7 @@ GEM
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
     will_paginate (3.0.4)
+    win32console (1.3.2)
     win32console (1.3.2-x86-mingw32)
 
 PLATFORMS
@@ -174,6 +187,7 @@ DEPENDENCIES
   omniauth-facebook
   pry
   rails (= 4.0.0)
+  ransack!
   sass-rails (~> 4.0.0)
   sdoc
   simple_form (>= 3.0.0.rc)
