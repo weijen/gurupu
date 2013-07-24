@@ -75,7 +75,7 @@ class ExpensesController < ApplicationController
     @expense = @group.expenses.build(expense_params)
     @expense.user_id = current_user.id #maca
     if @expense.save
-      redirect_to group_expenses_path
+      redirect_to group_expenses_path 
     else
       render action: 'new'
     end
@@ -100,15 +100,19 @@ class ExpensesController < ApplicationController
   end
 
   def destroy
-    #maca test @expense.destroy
+    @expense.destroy
     #maca test redirect_to group_expenses_path
+    respond_to do |format|
+      format.json { head :no_content }
+    end
+
   end
 
   private
 
   #maca add start
   def check_frozen
-    if @group.is_frozen?
+    if @group.state =="forzen"
       flash[:alert] = action_name+" fail! Group state is frozen"  
       redirect_to group_expenses_path
     end
@@ -137,7 +141,7 @@ class ExpensesController < ApplicationController
 
   def expense_params
     #maca params.require(:expense).permit(:name, :description, :cost, :date, :tag_id)
-    params.require(:expense).permit(:name, :description, :cost, :date, :tag_id, :user_id) #maca
+    params.require(:expense).permit(:name, :cost, :date, :tag_id, :user_id) #maca
   end
 
 end

@@ -15,4 +15,9 @@
 //= require twitter/bootstrap
 //= require bootstrap-datepicker
 //= require turbolinks
+//= require underscore
+//= require backbone
+//= require backbone_rails_sync
+//= require backbone_datalink
+//= require backbone/gurupu
 //= require_tree .

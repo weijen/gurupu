@@ -1,0 +1,20 @@
+<td><input class="input-small" type="text" name="date"
+data-behaviour="datepicker" value="<%= expense.get('date') %>" ></td>  
+<td><%= expense.get('username') %></td>  
+<td><input class="input-mini" type="text" name="cost" placeholder="金額"
+value="<%= expense.get('cost') %>" ></td>
+<td>  
+  <select class="span2" name="tag_id" >
+    <% tags.each(function(tag) { %>
+        <option value="<%= tag.get('id')%>"
+        <%if (tag.get('id')==expense.get('tag_id')) { %>
+          <%= "selected" %>
+        <% } %>
+        ><%= tag.get('name') %></option>
+    <% }); %>
+  </select>
+</td>
+<td><input class="input-small" type="text" name="name" placeholder="項目名稱"
+value="<%= expense.get('name') %>" ></td>
+<td><button class="btn cancel" >取消</button></td> 
+<td><button class="btn btn-primary comfirm" >確定</button></td> 

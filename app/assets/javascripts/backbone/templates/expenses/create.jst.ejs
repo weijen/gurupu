@@ -1,0 +1,15 @@
+  <h3>新增報帳資料</h3>
+  <input class="input-small" type="text" name="date" data-behaviour="datepicker">
+      
+  <input class="input-mini" type="text" name="cost" placeholder="金額">
+      
+  <select class="span2" name="tag_id">
+    <% collection.each(function(model) { %>
+        <option value="<%= model.get('id')%>"><%= model.get('name') %></option>
+    <% }); %>
+  </select>
+
+  <input class="input-small" type="text" name="name" placeholder="項目名稱">
+ 
+  <button class="btn btn-primary">送出</button>
+
