@@ -3,15 +3,12 @@ class InvitationsController < ApplicationController
   before_action :set_invitation, only: [:accept]
 
   def create
-    group_user = current_user.group_users.build(group: @group,
-      role: :member, state: :invite)
-    group_user.save
     invitation = Invitation.find_or_initialize_by(group: @group, user: current_user,
       email: params[:email])
     if invitation.save
       GroupMailer.invite(invitation).deliver
     else
-      flash.now[:error] = 'Error'
+      flash[:error] = 'Error'
     end
     redirect_to group_users_path(@group)
   end
