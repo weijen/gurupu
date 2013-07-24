@@ -11,10 +11,7 @@ class ExpensesController < ApplicationController
 
   def summary    
     @sel_type = params[:var] || "utt" 
-    @sel_tag = params[:sel_tag] || "all"
-    @sel_user = params[:sel_user] || "all"
-
-    if params[:dp1] == nil
+    if params[:q] == nil
       @start_day = (Date.today - 1.month).to_s
       @end_day = Date.today.to_s
       if @group.expenses.first != nil    
@@ -22,27 +19,25 @@ class ExpensesController < ApplicationController
         @start_day = first_creat if first_creat > @start_day
       end
     else
-      @start_day = params[:dp1].to_s
-      @end_day = params[:dp2].to_s      
-    end
+      @start_day = params[:q][:date_gteq].to_s
+      @end_day = params[:q][:date_lteq].to_s      
+    end      
 
-    str="strftime('%Y-%m-%d', date) >= ? AND strftime('%Y-%m-%d', date) <= ?"
+    @q = Expense.search(params[:q])
+    ex_raw = @q.result
+
+    # prepare output data
     if @sel_type=='all'
-      str+=" AND tag_id = " + params[:sel_tag].to_s if @sel_tag != "all"
-      str+=" AND user_id = " + params[:sel_user].to_s if @sel_user != "all"
-      ex_sum = @group.expenses.all(conditions: [str, @start_day, @end_day])
       $ex_sum_all=[]
-      ex_sum.each do |ex|
+      ex_raw.each do |ex|
         $ex_sum_all<<[1,ex.date.strftime('%Y-%m-%d'), ex.user.name, ex.tag.name, ex.name, ex.cost]
       end
-      $ex_sum_all << [2,'sum','','','',ex_sum.sum {|ex| ex.cost}]      
+      $ex_sum_all << [2,'sum','','','',ex_raw.sum {|ex| ex.cost}]      
     else
-      @ex_sum_all=[]
-      @ex_sum = @group.expenses.all(select: "user_id,tag_id, SUM(cost) costs",
-        conditions: [str, @start_day, @end_day],
+      @ex_sum = ex_raw.all(select: "user_id,tag_id, SUM(cost) costs",
         group: "user_id, tag_id", 
-        order: "user_id, tag_id")    
-
+        order: "user_id, tag_id")         
+      @ex_sum_all=[]
       # group by user -> tag
       if @sel_type[0,2]=="ut"  
         @ex_sum.each do |ex|
@@ -94,7 +89,7 @@ class ExpensesController < ApplicationController
     @expense = @group.expenses.build(expense_params)
     @expense.user_id = current_user.id #maca
     if @expense.save
-      redirect_to group_expenses_path
+      redirect_to group_expenses_path 
     else
       render action: 'new'
     end
@@ -119,15 +114,19 @@ class ExpensesController < ApplicationController
   end
 
   def destroy
-    #maca test @expense.destroy
+    @expense.destroy
     #maca test redirect_to group_expenses_path
+    respond_to do |format|
+      format.json { head :no_content }
+    end
+
   end
 
   private
 
   #maca add start
   def check_frozen
-    if @group.is_frozen?
+    if @group.state =="forzen"
       flash[:alert] = action_name+" fail! Group state is frozen"  
       redirect_to group_expenses_path
     end
@@ -156,7 +155,7 @@ class ExpensesController < ApplicationController
 
   def expense_params
     #maca params.require(:expense).permit(:name, :description, :cost, :date, :tag_id)
-    params.require(:expense).permit(:name, :description, :cost, :date, :tag_id, :user_id) #maca
+    params.require(:expense).permit(:name, :cost, :date, :tag_id, :user_id) #maca
   end
 
 end

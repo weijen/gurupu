@@ -1,0 +1,27 @@
+<td><%= expense.get('date') %></td>  
+<td><%= expense.get('username') %></td>  
+<td><%= expense.get('cost') %></td>
+<td><%= tags.get(expense.get('tag_id')).get('name')%></td>
+<td><%= expense.get('name') %></td>
+<td><button class="btn quick-func" >快速報帳</button></td> 
+<td>
+  <%if (expense.get('editable') || expense.get('deleteable')) { %>
+	<div class="btn-group">
+	<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		功能<span class="caret"></span>
+	</a>
+	<ul class="dropdown-menu">
+	<!-- dropdown menu links -->
+    <%if (expense.get('editable')){ %>
+		  <li><a class="edit-func" tabindex="-1" href="">編輯</a></li>
+		<% } %>
+
+    <%if (expense.get('deleteable')){ %>
+      <li><a class="del-func" tabindex="-1" href="">刪除</a></li>
+    <% } %>
+
+	</ul>
+	</div>
+  <% } %>
+</td>  
+

@@ -1,6 +1,6 @@
 <%= render 'gp' %>
 <% if @user_status=="join" %>
-  <table class="table table-hover" width:100%>    
+  <!--table class="table table-hover" width:100%>    
     <thead>   
       <tr>
         <th>分類</th>
@@ -35,5 +35,15 @@
         </tr>
       <% end %>
     </tbody>
-  </table>  
+  </table--!>  
+
+  <div id="create" class="span10"></div>
+  <div id="expenses"></div>
+  <script type="text/javascript">
+    $(function(){
+        window.router = new Gurupu.Routers.ExpensesRouter({tags: <%= @group.tags.select("tags.id, name").to_json.html_safe %>,
+          current_user_name:<%=current_user.name.to_json.html_safe%>});
+        Backbone.history.start();
+        });
+  </script>
 <% end %> 
