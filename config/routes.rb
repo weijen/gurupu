@@ -18,6 +18,7 @@ Gurupu::Application.routes.draw do
     resources :expenses do
       collection do
         get :summary
+        get :export
       end
     end
   end

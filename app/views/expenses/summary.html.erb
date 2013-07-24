@@ -22,52 +22,31 @@
       </ul>
     </div>
     <% if @sel_type=="all" %>
-      <%= image_tag('table_excel.png', class: "btn-link pull-right", onclick: "tableToExcel('table3')") %>
+      <%= link_to(image_tag('table_excel.png', class: "pull-right"), action:'export', format: 'csv') %> 
     <% end %>  
     </h4>
 
-
-    <%= simple_form_for @group, 
-          url: summary_group_expenses_path, 
-          method: :get do |g| %>  
-      <div class="well well-small">   
-        <h4>帳目篩選時間:
-        <input class="input-small" type="text" value=<%=@start_day%> data-date-format="yyyy-mm-dd" id="dp1" name="dp1">
+    <%= simple_form_for @q, url: summary_group_expenses_path, method: :get do |f| %>  
+      <div class="well well-small">
+      <h4><ul class="inline">
+        帳目篩選時間:
+        <li><%= f.input :date_gteq, input_html: {id:"dp1",value:@start_day, class:"input-small"},label: false%></li>
         至
-        <input class="input-small" type="text" value=<%=@end_day%> data-date-format="yyyy-mm-dd" id="dp2" name="dp2">
-        <input type="hidden" value=<%=@sel_type%> id="var" name="var">
-
+        <li><%= f.input :date_lteq, input_html: {id:"dp2",value:@end_day, class:"input-small"},label: false %></li>
+        
         <% if @sel_type=="all" %>
           <br>
           分類:
-          <select name="sel_tag" id="sel_tag" class="span3">
-          <option value='all'> 全部分類 </option>
-          <% @group.tags.each do |t| %>
-            <% if t.id.to_s==@sel_tag %>
-              <option value=<%=t.id%> selected> <%= t.name %> </option>
-            <% else %>  
-              <option value=<%=t.id%>> <%= t.name %> </option>
-            <% end %>  
-          <% end %>
-          </select>
-
+          <li><%= f.input :tag_id_eq, :collection => @group.tags.map{|t| [t.name, t.id]},label: false, 
+          include_blank:"全部分類",default: 1, input_html: {class:"span3"} %></li>        
           團員:
-          <select name="sel_user" id="sel_user" class="span2">
-          <option value='all'> 全部團員 </option>
-          <%# @group.members.each do |u| %>
-          <% (@group.expenses.select("distinct user_id")).each do |u| %>
-            <% if u.user_id.to_s==@sel_user %>
-              <option value=<%=u.user_id%> selected> <%= User.find(u.user_id).name %> </option>
-            <% else %>  
-              <option value=<%=u.user_id%>> <%= User.find(u.user_id).name %> </option>
-            <% end %>  
-          <% end %>
-          </select>
-        <% end %>         
+          <li><%= f.input :user_id_eq, :collection => @group.expenses.select("distinct user_id").map{|u| [User.find(u.user_id).name, u.user_id]},label: false, include_blank:"全部團員",default: 1,input_html: {class:"span2"} %></li>        
+        <% end %>
 
-        <%= g.button :submit ,"確認", class: "btn btn-info" %>
-        </h4>
-      </div>    
+        <input type="hidden" value=<%=@sel_type%> id="var" name="var">
+        <li><%= f.button :submit ,"確認", class: "btn btn-info" %></li>
+      </ul></h4>
+      </div>
     <% end %>
 
     <% if @sel_type=="utt" %>
@@ -81,7 +60,6 @@
     <% if @sel_type[2]=="c" %>
       <%= render 'sum_chart' %>
     <% end %>
-
 
     <!-- table3 -->
     <% if @sel_type=="all" %>
@@ -97,28 +75,31 @@
           </tr>
         </thead>
         <tbody>
-          <% @ex_sum.each do |ex| %>      
-            <tr>
-              <td> <%= ex.date.strftime('%Y-%m-%d') %> </td>
-              <td> <%= ex.user.name %> </td>
-              <td> <%= ex.tag.name %> </td>
-              <td> <%= ex.name %> </td> 
-              <td> <dd class="text-right"><%= ex.cost %></dd> </td> 
-              <td> 
-                <% if @group.active? && @group.owners.include?(current_user) %>
-                  <button class="btn btn-link btn-mini"> 
-                    <i class="icon-remove"></i>
-                    <!--link destroy expense-->
-                  </button>
-                <% end %>
-              </td> 
-            </tr>
+          <% $ex_sum_all.each do |type, date, member, tag, item, cost| %>
+            <% if type==1 %>
+              <tr>
+                <td> <%= date %> </td>
+                <td> <%= member %> </td>
+                <td> <%= tag %> </td>
+                <td> <%= item %> </td> 
+                <td> <dd class="text-right"><%= cost %></dd> </td> 
+                <td> 
+                  <% if @group.active? && @group.owners.include?(current_user) %>
+                    <button class="btn btn-link btn-mini"> 
+                      <i class="icon-remove"></i>
+                      <!--link destroy expense-->
+                    </button>
+                  <% end %>
+                </td> 
+              </tr>
+            <% elsif type==2 %>   
+              <tr bgcolor=oldlace>
+                <td colspan="4"> 總計 </td> 
+                <td> <dd class="text-right"><%= cost %></dd> </td> 
+                <td></td>
+              </tr>       
+            <% end %> 
           <% end %> 
-          <tr bgcolor=oldlace>
-            <td colspan="4"> 總計 </td> 
-            <td> <dd class="text-right"><%= @ex_sum.sum {|ex| ex.cost} %></dd> </td> 
-            <td></td>
-          </tr>            
         </tbody>
       </table>
     <% end %>
@@ -128,23 +109,8 @@
 </div>
 
 <script type="text/javascript">
-  $(function() {
-    $('#dp1').datepicker();
-    $('#dp2').datepicker();      
+  $(function() {    
+    $('#dp1').datepicker({"format": "yyyy-mm-dd","weekStart": 1,"autoclose": true}); 
+    $('#dp2').datepicker({"format": "yyyy-mm-dd","weekStart": 1,"autoclose": true}); 
   });
-
-  var tableToExcel = (function() {
-    var uri = 'data:application/vnd.ms-excel;base64,'
-      , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
-      , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-      , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-    return function(table, name) {
-      if (!table.nodeType) table = document.getElementById(table)
-      var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
-      window.location.href = uri + base64(format(template, ctx))
-    }
-  })()
 </script>
-
-
-

@@ -28,12 +28,12 @@ class UsersController < ApplicationController
   end
 
   def become_member
-    if @group_user.user_id == current_user.id && group_user.role.admin?
+    if @group_user.user_id == current_user.id && @group_user.role.admin?
       if @group.owners.size == 1
         flash[:error] = '你是唯一的管理員'
       else
-        group_user.role = :member
-        if group_user.save
+        @group_user.role = :member
+        if @group_user.save
           flash[:notice] = 'Successful update'
         else
           flash[:error] = 'Fail'
