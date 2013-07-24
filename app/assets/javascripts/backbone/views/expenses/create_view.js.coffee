@@ -22,6 +22,7 @@ class Gurupu.Views.Expenses.CreateView extends Backbone.View
       editable: true
       deleteable: true
     })
+    @$el.find("input").val(null)
   render: ->
     @$el.html(@template(collection:@collection))
     return this

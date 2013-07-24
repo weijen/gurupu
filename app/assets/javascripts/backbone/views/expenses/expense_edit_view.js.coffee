@@ -24,5 +24,6 @@ class Gurupu.Views.Expenses.ExpenseEditView extends Backbone.View
     @.remove()
   render: ->
     @$el.html(@template(expense:@expense,tags:@tags))
+    @$el.find('[data-behaviour~=datepicker]').datepicker({format:'yyyy-mm-dd'})
     return this
   
