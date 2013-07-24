@@ -15,16 +15,21 @@ class ExpensesController < ApplicationController
       @start_day = (Date.today - 1.month).to_s
       @end_day = Date.today.to_s
       if @group.expenses.first != nil    
-        first_creat = @group.expenses.first.created_at.strftime('%Y-%m-%d')         
-        @start_day = first_creat if first_creat > @start_day
+        first_creat = @group.expenses.minimum('date').strftime('%Y-%m-%d')
+        @start_day = first_creat if ((@sel_type=='all') || (first_creat > @start_day))
+        @end_day = @group.expenses.maximum('date').strftime('%Y-%m-%d')
       end
     else
       @start_day = params[:q][:date_gteq].to_s
       @end_day = params[:q][:date_lteq].to_s      
     end      
 
-    @q = Expense.search(params[:q])
-    ex_raw = @q.result
+    @q = @group.expenses.search(params[:q])
+    if params[:q] == nil
+      ex_raw = @q.result.where("strftime('%Y-%m-%d', date) >= ? AND strftime('%Y-%m-%d', date) <= ?", @start_day, @end_day)
+    else
+      ex_raw = @q.result
+    end    
 
     # prepare output data
     if @sel_type=='all'
