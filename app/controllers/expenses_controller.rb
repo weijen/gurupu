@@ -42,33 +42,21 @@ class ExpensesController < ApplicationController
       @ex_sum = ex_raw.all(select: "user_id,tag_id, SUM(cost) costs",
         group: "user_id, tag_id", 
         order: "user_id, tag_id")         
-      @ex_sum_all=[]
       # group by user -> tag
+      @ex_sum2=[]
       if @sel_type[0,2]=="ut"  
         @ex_sum.each do |ex|
-          @ex_sum_all<<[1, ex.user_id, ex.tag_id, ex.costs, ex.user.name, ex.tag.name]      
+          @ex_sum2<<[ex.user_id, ex.tag_id, ex.costs, ex.user.name, ex.tag.name]
         end
         @ex_sum1 = @ex_sum.group_by(&:user_id).map {|k,v| [k, v.sum {|e| e.costs}, User.find(k).name] }.sort  
       # group by tag -> user
       elsif @sel_type[0,2]=="tu"  
         @ex_sum.each do |ex|
-          @ex_sum_all<<[1, ex.tag_id, ex.user_id, ex.costs, ex.tag.name, ex.user.name]      
+          @ex_sum2<<[ex.tag_id, ex.user_id, ex.costs, ex.tag.name, ex.user.name]
         end
         @ex_sum1 = @ex_sum.group_by(&:tag_id).map {|k,v| [k, v.sum {|e| e.costs}, Tag.find(k).name] }.sort
-      end    
-      #-----------------------------------------
-      # @ex_sum_all type=0: summary key1
-      #             type=1: summary key1+key2
-      #             type=2: summary all
-      #-----------------------------------------
-      @ex_sum1.each do |key1, sum_costs, name1|
-        @ex_sum_all<<[0, key1, 0, sum_costs, name1, '']
-      end
-      @ex_sum_all = @ex_sum_all.sort_by { |type, key1, key2| [key1, type, key2] }
-      
-      # total_costs
-      total_costs = @ex_sum1.sum {|key1, costs| costs}
-      @ex_sum_all<<[2, 0, 0, total_costs, '', '']
+      end          
+      @total_costs = @ex_sum1.sum {|key1, costs| costs}
     end
   end
 
