@@ -11,11 +11,10 @@
   <div class="span4">
   <div class="row">
   <font size="3">  
-    <% @group_sel_tag.each do |tag| %>          
+    <% @sel_tag.each do |tag_id, tag_name, pre_check, final_check| %>          
       <div class="span2">
-      <%= check_box_tag 'tag_ids[]', tag.id, 
-          GroupTag.find_by_group_id_and_tag_id(@group.id,tag.id) %>
-      <%= tag.name %>      
+      <%= check_box_tag 'tag_ids[]', tag_id, final_check%>
+      <%= tag_name %>      
       </div>      
     <% end %> 
   </font>
