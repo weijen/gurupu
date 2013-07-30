@@ -18,7 +18,6 @@ jQuery ->
 
 
   $('#member').typeahead
-    minLength: 2
     source: (query, process) ->
       $.get '/users/typeahead', name: query, (data) ->
         uidList = []
@@ -31,6 +30,7 @@ jQuery ->
       uidMap[item].name.match(new RegExp(this.query.trim(), 'i')) != null
     updater: (item) ->
       $('#uid').val(item)
+      $('#invite-form').submit()
       window.uidMap[item].name
     highlighter: (item) ->
       name = window.uidMap[item].name
