@@ -9,12 +9,15 @@ Gurupu::Application.routes.draw do
     resources :users, only: [:index, :new, :create, :destroy] do
       member do
         patch :confirm
-        patch :accept
         patch 'become-owner'=> 'users#become_owner', as: 'become_owner'
         patch 'become-member'=> 'users#become_member', as: 'become_member'
       end
+      collection do
+        post 'invite-member'=> 'users#invite', as: 'invite_member'
+        post 'invite-by-email'=> 'invitations#create', as: 'invite_by_meail'
+        patch :accept
+      end
     end
-    resource :invitation, only: [:create]
     resources :tags, except: [:index]
     resources :expenses do
       collection do
@@ -23,8 +26,8 @@ Gurupu::Application.routes.draw do
       end
     end
   end
-  resources :invitations, only: [:accept] do
-    get :accept, on: :member
+  resources :invitations, only: [:accept, :show] do
+    patch :accept, on: :member
   end
   get "users/typeahead"
   get "welcome/index"

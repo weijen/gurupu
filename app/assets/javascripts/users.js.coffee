@@ -9,9 +9,15 @@ jQuery ->
     unselected_id = $('#member-type option:not(:selected)').val()
     $("##{selected_id}").removeClass('hidden')
     $("##{unselected_id}").addClass('hidden')
+    base = window.location.pathname
+    if selected_id == 'member'
+      action_path = base.concat('/invite-member')
+    else
+      action_path = base.concat('/invite-by-email')
+    $('#invite-form').attr('action', action_path)
 
 
-  $('#uid').typeahead
+  $('#member').typeahead
     minLength: 2
     source: (query, process) ->
       $.get '/users/typeahead', name: query, (data) ->
@@ -24,7 +30,7 @@ jQuery ->
     matcher: (item) ->
       uidMap[item].name.match(new RegExp(this.query.trim(), 'i')) != null
     updater: (item) ->
-      # To-Do save uid
+      $('#uid').val(item)
       window.uidMap[item].name
     highlighter: (item) ->
       name = window.uidMap[item].name

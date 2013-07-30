@@ -1,17 +1,17 @@
 class GroupsController < ApplicationController
-  prepend_before_action :set_group, except: [:new, :create]  
-  before_action :select_tag, only: [:new, :create, :edit, :update]  
-  before_action :tmp_tag, only: [:create, :update]  
+  prepend_before_action :set_group, except: [:new, :create]
+  before_action :select_tag, only: [:new, :create, :edit, :update]
+  before_action :tmp_tag, only: [:create, :update]
 
   def index
     @groups = current_user.groups
   end
- 
+
   def state_change
     if @group.change_state(params[:state])
     else
       flash[:error] = 'Status change fail !!'
-    end      
+    end
     redirect_to edit_group_path
   end
 
@@ -29,7 +29,7 @@ class GroupsController < ApplicationController
     end
     current_user.quit!(@group)
 
-    flash[:notice] = "Quit "+msg+@group.name+" success" 
+    flash[:notice] = "Quit "+msg+@group.name+" success"
     redirect_to groups_path
   end
 
@@ -37,14 +37,14 @@ class GroupsController < ApplicationController
     @group = Group.new
   end
 
-  def create  
-    @group = Group.new(group_params)  
-    @group.state = 'active' 
+  def create
+    @group = Group.new(group_params)
+    @group.state = 'active'
     if @group.save
       @group.add_owner(current_user)
       (params[:tag_ids] || []).each { |i| @group.tags << Tag.find(i) }
-      
-      flash[:notice] = "Create Group success" 
+
+      flash[:notice] = "Create Group success"
       redirect_to edit_group_path(@group)
     else
       render action: 'new'
@@ -56,7 +56,7 @@ class GroupsController < ApplicationController
 
   def show
     unless current_user.is_member_of?(@group)
-      redirect_to new_group_user(@group)
+      redirect_to new_group_user_path(@group)
     end
   end
 
@@ -67,21 +67,21 @@ class GroupsController < ApplicationController
       # if expenses exist, cannot remove tag
       #----------------------------------------
       msg=''
-      @sel_tag.each do |tag_id, tag_name, pre_check, final_check|  
+      @sel_tag.each do |tag_id, tag_name, pre_check, final_check|
         tag=Tag.find(tag_id)
         if (pre_check.blank?)==true && (final_check.blank?)==false
-          @group.tags << tag 
+          @group.tags << tag
         elsif (pre_check.blank?)==false && (final_check.blank?)==true
           if @group.expenses.find_by_tag_id(tag.id)
             msg=msg+' '+tag_name
           else
-            @group.tags.delete(tag) 
+            @group.tags.delete(tag)
           end
         end
       end
 
       if msg==''
-        flash[:notice] = "Update Group success" 
+        flash[:notice] = "Update Group success"
       else
         flash[:error] = "cannot remove tag:"+msg
       end
@@ -110,15 +110,15 @@ class GroupsController < ApplicationController
         pre_check = false
       end
       @sel_tag<<[tag.id, tag.name, pre_check, pre_check]
-    end 
+    end
   end
 
   def tmp_tag
     tmp_tag=[]
     @sel_tag.each do |tag_id, tag_name, pre_check, final_check|
       tmp_tag<<[tag_id, tag_name, pre_check, (params[:tag_ids] || []).include?(tag_id.to_s)]
-    end     
-    @sel_tag=tmp_tag 
+    end
+    @sel_tag=tmp_tag
   end
 
   def set_group

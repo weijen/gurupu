@@ -1,3 +1,3 @@
 Hi ! <%= @invitation.user.name %> invite you to join the <%= @invitation.group.name %> @ GURUPU
-link: <%= accept_invitation_url(@invitation, :host =>"localhost:3000") %>
+link: <%= invitation_url(@invitation, :host =>"localhost:3000") %>
 

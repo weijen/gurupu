@@ -3,7 +3,7 @@
     <h2><%= @group.name %></h2>
     <hr />
     <p><%= @group.description %></p>
-    <%= link_to '確認入團', group_users_path(@group), method: :post, class: 'btn btn-primary' %>
+    <%= link_to '確認入團', @join_group_path, method: :patch, class: 'btn btn-primary' %>
   </div>
   <%= render 'shared/groups_sidebar' %>
 </div>

@@ -9,6 +9,7 @@ class UsersController < ApplicationController
   end
 
   def new
+    @join_group_path = accept_group_users_path(@group)
   end
 
   def create
@@ -53,6 +54,30 @@ class UsersController < ApplicationController
       flash.now[:error] = 'Fail'
     end
     redirect_to group_users_path(@group_user.group)
+  end
+
+  def invite
+    user = User.find_by(uid: params[:uid])
+    redirect_to group_users_path(@group), error: 'fail' unless user
+    group_user = GroupUser.new(user: user, group: @group,
+      role: :member, state: :invite)
+    if group_user.save
+      flash[:notice] = 'Successful invite'
+    else
+      flash[:error] = 'Error'
+    end
+    redirect_to group_users_path(@group)
+  end
+
+  def accept
+    group_user = GroupUser.find_by(group: @group, user: current_user)
+    group_user.state = :join
+    if group_user.save
+      flash.now[:notice] = 'Successful join'
+    else
+      flash.now[:error] = 'Fail'
+    end
+    redirect_to group_path(@group)
   end
 
   def destroy

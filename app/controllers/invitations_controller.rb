@@ -1,6 +1,6 @@
 class InvitationsController < ApplicationController
   before_action :set_group, only: [:create]
-  before_action :set_invitation, only: [:accept]
+  before_action :set_invitation, only: [:accept, :show]
 
   def create
     invitation = Invitation.find_or_initialize_by(group: @group, user: current_user,
@@ -11,6 +11,12 @@ class InvitationsController < ApplicationController
       flash[:error] = 'Error'
     end
     redirect_to group_users_path(@group)
+  end
+
+  def show
+    @group = @invitation.group
+    @join_group_path: accept_invitation_path(@invitation)
+    render 'users/new'
   end
 
   def accept
@@ -24,7 +30,7 @@ class InvitationsController < ApplicationController
   end
 
   private
-  def set_group
+  def set_invitation
     @invitation = Invitation.find_by_slug(params[:id])
   end
 

@@ -36,14 +36,24 @@ class User < ActiveRecord::Base
   end
 
   def is_member_of?(group)
-    groups.include?(group)
+    gp = group_user(group)
+    gp && gp.state.join?
   end
 
   def is_owner_of?(group)
-    group_users.find_by(group: group).role.admin?
+    group_user(group).role.admin?
   end
 
   def is_waiting?(group)
-    group_users.find_by(group: group).state.wait?
+    group_user(group).state.wait?
+  end
+
+  def is_inviting?(group)
+    group_user(group).state.invite?
+  end
+
+  private
+  def group_user(group)
+    group_users.find_by(group: group)
   end
 end
