@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_group
+  before_action :check_group_status
   before_action :set_user, only: [:update, :destroy, :confirm]
   before_action :set_group_user, only: [:become_owner, :become_member, :confirm]
   before_action :check_permission, only: [:destroy, :confirm]
@@ -103,6 +104,13 @@ class UsersController < ApplicationController
     @group = Group.find_by_slug(params[:group_id])
   end
 
+  def check_group_status
+    if @group.state.trashed?
+      flash[:error] = 'This group is deleted'
+      redirect_to groups_path
+    end
+  end
+
   def set_user
     @user = User.find(params[:id])
   end
@@ -113,7 +121,8 @@ class UsersController < ApplicationController
 
   def check_permission
     if current_user == nil || !current_user.is_owner_of?(@group)
-      redirect @group, error: 'Permission denied'
+      flash[:error] = 'Permission denied'
+      redirect_to @group
     end
   end
 

@@ -20,6 +20,7 @@ class GroupUser < ActiveRecord::Base
   ROLE = [:admin, :member]
   enumerize :state, in: STATE, predicates: true
   enumerize :role, in: ROLE, predicates: true
+  validates_uniqueness_of :user_id, scope: [:group_id]
 
 	#maca add start
   def change_state(status)
