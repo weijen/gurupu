@@ -39,6 +39,7 @@
 				class="offset1 table-bordered">
 				  <tr>
 				  	<th width="15%" style="color:white" bgcolor=orange>變更狀態</th>	  	
+				  	<% @group.active? %> <!--for gem enumerize bug-->
 				  	<% if @group.frozen? %>
 					    <td style="font-size:11pt">目前狀態為凍結報帳，點擊開放報帳可恢復報帳功能
 								<%= link_to '開放報帳', state_change_group_path(state: "active"), method: :patch, class: 'btn btn-success pull-right' %>			    

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130723151621) do
+ActiveRecord::Schema.define(version: 20130725055836) do
 
   create_table "expenses", force: true do |t|
     t.string   "name"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20130723151621) do
     t.integer  "user_id"
   end
 
+  add_index "expenses", ["date", "tag_id", "user_id"], name: "index_expenses_on_date_and_tag_id_and_user_id"
   add_index "expenses", ["group_id"], name: "index_expenses_on_group_id"
   add_index "expenses", ["slug"], name: "index_expenses_on_slug"
   add_index "expenses", ["user_id"], name: "index_expenses_on_user_id"

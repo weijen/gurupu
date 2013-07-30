@@ -1,6 +1,7 @@
 class GroupsController < ApplicationController
   prepend_before_action :set_group, except: [:new, :create]  
-  before_action :select_tag, only: [:new, :create, :edit, :update, :index]  
+  before_action :select_tag, only: [:new, :create, :edit, :update]  
+  before_action :tmp_tag, only: [:create, :update]  
 
   def index
     @groups = current_user.groups
@@ -65,20 +66,25 @@ class GroupsController < ApplicationController
       # group tags maintain
       # if expenses exist, cannot remove tag
       #----------------------------------------
-      @group_sel_tag.each do |tag|
-        if (params[:tag_ids] || []).include?(tag.id.to_s)
-          if !(@group.tags.include?(tag))
-            @group.tags << tag
-          end
-        else
-          if !(@group.expenses.find_by_tag_id(tag.id))
-            if @group.tags.include?(tag)
-              @group.tags.delete(tag)
-            end
+      msg=''
+      @sel_tag.each do |tag_id, tag_name, pre_check, final_check|  
+        tag=Tag.find(tag_id)
+        if (pre_check.blank?)==true && (final_check.blank?)==false
+          @group.tags << tag 
+        elsif (pre_check.blank?)==false && (final_check.blank?)==true
+          if @group.expenses.find_by_tag_id(tag.id)
+            msg=msg+' '+tag_name
+          else
+            @group.tags.delete(tag) 
           end
         end
       end
-      flash[:notice] = "Update Group success" 
+
+      if msg==''
+        flash[:notice] = "Update Group success" 
+      else
+        flash[:error] = "cannot remove tag:"+msg
+      end
       redirect_to edit_group_path
     else
       render action: 'edit'
@@ -92,10 +98,27 @@ class GroupsController < ApplicationController
 
   private
   def select_tag
-    @group_sel_tag = Tag.all.where(is_default: true)
+    group_sel_tag = Tag.all.where(is_default: true)
     if @group != nil
-      @group_sel_tag += @group.tags.where(is_default: false)
+      group_sel_tag += @group.tags.where(is_default: false)
     end
+    @sel_tag=[]
+    group_sel_tag.each do |tag|
+      if @group != nil
+        pre_check = @group.tags.include?(tag)
+      else
+        pre_check = false
+      end
+      @sel_tag<<[tag.id, tag.name, pre_check, pre_check]
+    end 
+  end
+
+  def tmp_tag
+    tmp_tag=[]
+    @sel_tag.each do |tag_id, tag_name, pre_check, final_check|
+      tmp_tag<<[tag_id, tag_name, pre_check, (params[:tag_ids] || []).include?(tag_id.to_s)]
+    end     
+    @sel_tag=tmp_tag 
   end
 
   def set_group

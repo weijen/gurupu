@@ -49,18 +49,9 @@
       </div>
     <% end %>
 
-    <% if @sel_type=="utt" %>
-      <%= render 'sum_table' %>
-    <% end %>
-
-    <% if @sel_type=="tut" %>
-      <%= render 'sum_table2' %>
-    <% end %>
-
-    <% if @sel_type[2]=="c" %>
-      <%= render 'sum_chart' %>
-    <% end %>
-
+    <%= render 'sum_table' if @sel_type[2]=="t" %>
+    <%= render 'sum_chart' if @sel_type[2]=="c" %>
+    
     <!-- table3 -->
     <% if @sel_type=="all" %>
       <table class="table table-condensed" id="table3"> 

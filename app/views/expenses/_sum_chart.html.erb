@@ -29,15 +29,13 @@
     var data = new google.visualization.DataTable();
     var i=0;
     data.addColumn('string','Name2');
-    data.addColumn('number','Cost2');   
-    <% @ex_sum_all.each do |type, key1, key2, costs, name1, name2| %> 
-      <% if type==1 %>
-        if (<%= key1 %> == key ) {        
-          data.addRows(1);
-          data.setValue(i, 0, "<%= name2 %>");
-          data.setValue(i++, 1, <%= costs %>);
-        }
-      <% end %> 
+    data.addColumn('number','Cost2');  
+    <% @ex_sum2.each do |key1, key2, costs, name1, name2| %> 
+      if (<%= key1 %> == key ) {        
+        data.addRows(1);
+        data.setValue(i, 0, "<%= name2 %>");
+        data.setValue(i++, 1, <%= costs %>);
+      }
     <% end %>  
 
     var options = {

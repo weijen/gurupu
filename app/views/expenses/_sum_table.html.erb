@@ -15,48 +15,38 @@
     </tr>
   </thead>
   <tbody>
-    <% pretype=0 %>
-    <% @ex_sum_all.each do |type, key1, key2, costs, name1, name2| %>     
-      <% row_id="row_"+key1.to_s %>
-      <% row_child="child_row_"+key1.to_s %>
-
-      <% if pretype==1 && (type==0 || type==2) %>
-                </table>
-            </div> <!--div class="row"-->
-          </td>
-        </tr>     
-      <% end %>   
-      <% if type==0 %>            
-        <tr class="parent" id=<%=row_id%> bgcolor="#FCFCFC">
-          <td colspan="4"> <%= name1 %> </td>
-          <td> <dd class="text-right"><%= costs %></dd> </td>
-        </tr>   
-        <tr class=<%=row_child%>>
-        	<td colspan="1">
-          <td colspan="4">
-            <div class="row">
-                <table class="table table-condensed"> 
-                  <tr bgcolor="#E0EEEE">
-                    <th colspan="3"><%= title2 %></th>
-                    <th> <dd class="text-right">金額</dd></th>
-                  </tr>   
-      <% elsif type==1 %>             
-                    <tr>
-                      <td colspan="3"> <%= name2 %> </td>
-                      <td> <dd class="text-right"><%= costs %></dd> </td>
-                    </tr>   
-      <% elsif type==2 %>   
-        <tr bgcolor=oldlace>
-          <td colspan="4">總計</td> 
-          <td> <dd class="text-right"><%= costs %></dd> </td>       
-        </tr>   
-      <% end %> 
-
-      <% pretype=type %>
-    <% end %> <!--@ex_sum_all.each do-->      
+    <% @ex_sum1.each do |key, sum_costs, name| %>
+      <% row_id="row_"+key.to_s %>
+      <% row_child="child_row_"+key.to_s %>
+      <tr class="parent" id=<%=row_id%> bgcolor="#FCFCFC">
+        <td colspan="4"> <%= name %> </td>
+        <td> <dd class="text-right"><%= sum_costs %></dd> </td>
+      </tr>  
+      <tr class=<%=row_child%>>
+      	<td colspan="1"></td>
+        <td colspan="4">
+          <table class="table table-condensed"> 
+            <tr bgcolor="#E0EEEE">
+              <th colspan="3"><%= title2 %></th>
+              <th> <dd class="text-right">金額</dd></th>
+            </tr>   
+            <% sum2=@ex_sum2.select {|key1,_,_,_,_| key1==key} %>
+            <% sum2.each do |key1, key2, costs, name1, name2| %>                
+              <tr>
+                <td colspan="3"> <%= name2 %> </td>
+                <td> <dd class="text-right"><%= costs %></dd> </td>
+              </tr>   
+            <% end %>
+          </table>          
+        </td>
+      </tr>     
+    <% end %> <!--@ex_sum1.each do-->      
+    <tr bgcolor=oldlace>
+      <td colspan="4">總計</td> 
+      <td> <dd class="text-right"><%= @total_costs %></dd> </td>       
+    </tr>              
   </tbody>
 </table>
-
 
 <style>  
 .selected{ background:#ffffff;color:#000000;}
