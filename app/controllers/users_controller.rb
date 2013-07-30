@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_group
-  before_action :check_group_status
+  before_action :set_group, except: [:typeahead]
+  before_action :check_group_status, except: [:typeahead]
   before_action :set_user, only: [:update, :destroy, :confirm]
   before_action :set_group_user, only: [:become_owner, :become_member, :confirm]
   before_action :check_permission, only: [:destroy, :confirm]

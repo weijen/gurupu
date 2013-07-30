@@ -14,8 +14,11 @@ class InvitationsController < ApplicationController
   end
 
   def show
+    unless login?
+      return redirect_to "/auth/facebook?#{{origin: request.path}.to_query}"
+    end
     @group = @invitation.group
-    @join_group_path: accept_invitation_path(@invitation)
+    @join_group_path = accept_invitation_path(@invitation)
     render 'users/new'
   end
 
