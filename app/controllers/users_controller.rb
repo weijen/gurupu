@@ -58,7 +58,10 @@ class UsersController < ApplicationController
 
   def invite
     user = User.find_by(uid: params[:uid])
-    redirect_to group_users_path(@group), error: 'fail' unless user
+    unless user
+      redirect_to group_users_path(@group), error: 'fail'
+      return
+    end
     group_user = GroupUser.new(user: user, group: @group,
       role: :member, state: :invite)
     if group_user.save
