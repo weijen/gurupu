@@ -9,6 +9,7 @@ Gurupu::Application.routes.draw do
     resources :users, only: [:index, :new, :create, :destroy] do
       member do
         patch :confirm
+        patch :accept
         patch 'become-owner'=> 'users#become_owner', as: 'become_owner'
         patch 'become-member'=> 'users#become_member', as: 'become_member'
       end
