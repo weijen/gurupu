@@ -37,6 +37,8 @@ gem 'bootstrap_helper'
 gem "rails-backbone"
 gem "ransack", github: "ernie/ransack", branch: "rails-4"
 
+gem 'high_voltage'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
