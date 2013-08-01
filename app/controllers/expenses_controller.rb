@@ -1,3 +1,4 @@
+require 'csv'
 class ExpensesController < ApplicationController
   #maca add start
   prepend_before_action :check_frozen, only: [:destroy, :show, :update, :create]

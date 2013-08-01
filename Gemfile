@@ -47,8 +47,25 @@ group :doc do
 end
 
 group :development do
-  gem 'annotate'
-  gem 'pry'
+  gem "capistrano"
+  gem "capistrano-ext"
+  gem "cape"
+  gem "binding_of_caller"
+  gem "better_errors"
+  gem "magic_encoding"
+  gem "annotate"
+  #gem "migration_comments"
+  gem "powder"
+  gem "pry-nav"
+  gem "pry-remote"
+  #gem "thin"
+end
+
+group :test, :development do
+  gem "rspec-rails", "~> 2.0"
+  gem 'factory_girl_rails'
+  gem 'faker'
+  gem 'database_cleaner'
 end
 
 # Use ActiveModel has_secure_password
