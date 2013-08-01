@@ -39,11 +39,15 @@
 
   <div id="create" class="span10"></div>
   <div id="expenses"></div>
-  <script type="text/javascript">
-    $(function(){
-        window.router = new Gurupu.Routers.ExpensesRouter({tags: <%= @group.tags.select("tags.id, name").to_json.html_safe %>,
-          current_user_name:<%=current_user.name.to_json.html_safe%>});
-        Backbone.history.start();
+  
+<% end %>
+
+<% content_for :javascripts do %>
+    <script type="text/javascript">
+        $(function(){
+            window.router = new Gurupu.Routers.ExpensesRouter({tags: <%= @group.tags.select("tags.id, name").to_json.html_safe %>,
+                current_user_name:<%=current_user.name.to_json.html_safe%>});
+            Backbone.history.start();
         });
   </script>
-<% end %> 
+<% end %>
