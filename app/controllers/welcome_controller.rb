@@ -1,6 +1,10 @@
 class WelcomeController < ApplicationController
   def index
-    render layout: false
+    if login?
+      redirect_to groups_path
+    else
+      render layout: false
+    end
   end
 
   def newbie
