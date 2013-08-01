@@ -1,0 +1,27 @@
+defaults: &defaults
+  app_name: "GURUPU"
+  domain: "http://localhost:3000"
+  facebook_app_id: ""
+  facebook_secret: ""
+  email_sender: ""
+  smtp_setting:
+    recipient: ""
+    default_url_options:
+      host: "localhost:3000"
+    smtp:
+      domain: "gmail.com"
+      user_name: "gurupu.dev"
+      password: "gurupudev"
+      address: "smtp.gmail.com"
+      port: 587
+      authentication: "plain"
+      enable_starttls_auto: true
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
