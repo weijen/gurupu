@@ -11,11 +11,11 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery.turbolinks
 //= require jquery_ujs
+//= require turbolinks
+//= require jquery.turbolinks
 //= require twitter/bootstrap
 //= require bootstrap-datepicker
-//= require turbolinks
 //= require underscore
 //= require backbone
 //= require backbone_rails_sync

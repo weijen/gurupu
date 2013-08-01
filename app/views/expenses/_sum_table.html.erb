@@ -52,6 +52,7 @@
 .selected{ background:#ffffff;color:#000000;}
 </style>
 
+<% content_for :javascripts do %>
 <script type="text/javascript">
 $(function(){
 	$('tr.parent').click(function(){   
@@ -61,5 +62,6 @@ $(function(){
 	}).click();
 })
 </script>
+<% end %>
 
 
