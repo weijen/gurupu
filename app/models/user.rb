@@ -13,7 +13,7 @@
 
 class User < ActiveRecord::Base
   def self.create_with_omniauth(auth)
-    create! do |user|
+    create do |user|
       user.provider = auth["provider"]
       user.uid = auth["uid"]
       user.name = auth["info"]["name"]
@@ -21,8 +21,10 @@ class User < ActiveRecord::Base
     end
   end
 
-  validates :uid, presence: true, uniqueness: true
-  validates :email, presence: true, uniqueness: true
+  validates :provider,  presence: true
+  validates :name,      presence: true
+  validates :uid,       presence: true, uniqueness: true
+  validates :email,     presence: true, uniqueness: true
 
   has_many :group_users
   has_many :groups, through: :group_users
