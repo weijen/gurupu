@@ -124,6 +124,7 @@ GEM
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
       warden (~> 1.2.3)
+    devise-i18n (0.8.6)
     diff-lcs (1.2.4)
     ejs (1.1.1)
     enumerize (0.6.1)
@@ -304,6 +305,7 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   database_cleaner
   devise (= 3.0.0)
+  devise-i18n
   enumerize
   factory_girl_rails
   faker

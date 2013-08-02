@@ -47,6 +47,7 @@ gem 'inherited_resources', github: 'josevalim/inherited_resources'
 gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
 gem 'activeadmin',         github: 'akashkamboj/active_admin', branch: 'rails4'
 gem 'formtastic',          github: 'justinfrench/formtastic'
+gem 'devise-i18n'
 
 # for i18n 
 gem 'rails-i18n', '~> 4.0.0.pre'
