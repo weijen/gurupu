@@ -14,7 +14,7 @@
 class Group < ActiveRecord::Base
   include Slugable
   extend Enumerize
-  validates :name, presence: true, uniqueness: true, length: { in: 5..20 }
+  validates :name, presence: true, length: { in: 5..20 }
   validates :description, presence: true, length: { maximum: 255 }
 
   has_many :expenses

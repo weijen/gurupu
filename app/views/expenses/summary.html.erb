@@ -4,7 +4,7 @@
     <%# @group.group_users.find_by_user_id(current_user.id).join? %>
 
     <% sel = {utt: "團員支出表",utc: "團員支出比例圖",
-              tut: "分類支出表",tuc: "分類支出比例圖",all: "總帳本"} %>
+              tut: "分類支出表",tuc: "分類支出比例圖",all: "帳務細項"} %>
     <% sel = sel.with_indifferent_access %>
 
     <h4>請選擇欲瀏覽報表:
@@ -14,11 +14,11 @@
         <span class="caret"></span>
       </a>
       <ul class="dropdown-menu">
-        <li><%=link_to sel["utt"], action:'summary', var: "utt", class: "bun"%></li>
-        <li><%=link_to sel["utc"], action:'summary', var: "utc", class: "bun"%></li> 
-        <li><%=link_to sel["tut"], action:'summary', var: "tut", class: "bun"%></li> 
-        <li><%=link_to sel["tuc"], action:'summary', var: "tuc", class: "bun"%></li>
-        <li><%=link_to sel["all"], action:'summary', var: "all", class: "bun"%></li>
+        <li><%=link_to sel["utt"], action:'summary', var: "utt", dp1:@start_day, dp2:@end_day, class: "bun"%></li>
+        <li><%=link_to sel["utc"], action:'summary', var: "utc", dp1:@start_day, dp2:@end_day, class: "bun"%></li> 
+        <li><%=link_to sel["tut"], action:'summary', var: "tut", dp1:@start_day, dp2:@end_day, class: "bun"%></li> 
+        <li><%=link_to sel["tuc"], action:'summary', var: "tuc", dp1:@start_day, dp2:@end_day, class: "bun"%></li>
+        <li><%=link_to sel["all"], action:'summary', var: "all", dp1:@start_day, dp2:@end_day, class: "bun"%></li>
       </ul>
     </div>
     <% if @sel_type=="all" %>
@@ -54,41 +54,42 @@
     
     <!-- table3 -->
     <% if @sel_type=="all" %>
-      <table class="table table-condensed" id="table3"> 
+      <table class="table table-condensed tablesorter" id="table3"> 
         <thead>
           <tr bgcolor=whitesmoke>
             <th>日期</th>
             <th>團友</th>
             <th>分類</th>
             <th>項目</th>
-            <th><dd class="text-right">金額</dd></th>
+            <th> <dd class="pull-right">金額</dd> </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <% $ex_sum_all.each do |type, date, member, tag, item, cost| %>
+          <% $ex_sum_all.each do |type, date, member, tag, item, cost, slug| %>
             <% if type==1 %>
               <tr>
                 <td> <%= date %> </td>
                 <td> <%= member %> </td>
                 <td> <%= tag %> </td>
                 <td> <%= item %> </td> 
-                <td> <dd class="text-right"><%= cost %></dd> </td> 
+                <td> <dd class="pull-right"><%= cost %> </dd></td> 
                 <td> 
                   <% if @group.active? && @group.owners.include?(current_user) %>
-                    <button class="btn btn-link btn-mini"> 
-                      <i class="icon-remove"></i>
-                      <!--link destroy expense-->
-                    </button>
+                    <%= link_to(group_expense_path(id: slug),method: :delete, confirm: '確定刪除?') do %>
+                      <i class="icon-remove"> </i>
+                    <% end %>  
                   <% end %>
                 </td> 
               </tr>
             <% elsif type==2 %>   
+              <tfoot>
               <tr bgcolor=oldlace>
                 <td colspan="4"> 總計 </td> 
-                <td> <dd class="text-right"><%= cost %></dd> </td> 
+                <td> <dd class="pull-right"><%= cost %></dd> </td> 
                 <td></td>
               </tr>       
+              </tfoot>
             <% end %> 
           <% end %> 
         </tbody>
@@ -100,13 +101,13 @@
 </div>
 
 <% content_for :javascripts do %>
-<script type="text/javascript">
-  $(function() {    
-    $('#dp1').datepicker({"format": "yyyy-mm-dd","weekStart": 1,"autoclose": true}); 
-    $('#dp2').datepicker({"format": "yyyy-mm-dd","weekStart": 1,"autoclose": true}); 
-  });
-
-</script>
+  <script type="text/javascript">
+    $(function() {    
+      $('#dp1').datepicker({"format": "yyyy-mm-dd","weekStart": 1,"autoclose": true}); 
+      $('#dp2').datepicker({"format": "yyyy-mm-dd","weekStart": 1,"autoclose": true}); 
+      $("#table3").tablesorter({sortList: [[0,1]], headers: {5: { sorter: false}} });
+    });  
+  </script>
 
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <script type="text/javascript">

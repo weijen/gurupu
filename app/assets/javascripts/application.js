@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.tablesorter.min
 //= require turbolinks
 //= require jquery.turbolinks
 //= require twitter/bootstrap
