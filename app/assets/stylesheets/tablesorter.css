@@ -1,0 +1,19 @@
+table.tablesorter .header {
+	background-image:url("tablesorter/unsorted.gif");
+         background-position: center  left;
+	background-repeat: no-repeat;
+        padding-left:30px;
+        padding-top:8px
+}
+table.tablesorter .headerSortUp {
+	background-image:url("tablesorter/asc.gif");
+	background-repeat:no-repeat ;
+        background-position: center left;
+
+}
+table.tablesorter .headerSortDown {
+	background-image:url("tablesorter/desc.gif");
+	background-repeat:no-repeat;
+         background-position: center  left;
+
+}

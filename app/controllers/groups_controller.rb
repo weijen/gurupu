@@ -25,6 +25,8 @@ class GroupsController < ApplicationController
     msg=""
     if trashed
       @group.change_state('trashed')
+      GroupUser.where("group_id = ?", @group.id).delete_all
+      GroupTag.where("group_id = ?", @group.id).delete_all
       msg="and drop "
     end
     current_user.quit!(@group)
@@ -72,7 +74,7 @@ class GroupsController < ApplicationController
         if (pre_check.blank?)==true && (final_check.blank?)==false
           @group.tags << tag
         elsif (pre_check.blank?)==false && (final_check.blank?)==true
-          if @group.expenses.find_by_tag_id(tag.id)
+          if @group.expenses.active.find_by_tag_id(tag.id)
             msg=msg+' '+tag_name
           else
             @group.tags.delete(tag)

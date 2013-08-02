@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 20130802041813) do
 
   create_table "expenses", force: true do |t|
     t.string   "name"
-    t.integer  "cost"
+    t.decimal  "cost",       precision: 18, scale: 2
     t.integer  "tag_id"
     t.string   "slug"
     t.datetime "created_at"
@@ -56,9 +56,9 @@ ActiveRecord::Schema.define(version: 20130802041813) do
     t.date     "date"
     t.integer  "group_id"
     t.integer  "user_id"
+    t.string   "state"
   end
 
-  add_index "expenses", ["date", "tag_id", "user_id"], name: "index_expenses_on_date_and_tag_id_and_user_id"
   add_index "expenses", ["group_id"], name: "index_expenses_on_group_id"
   add_index "expenses", ["slug"], name: "index_expenses_on_slug"
   add_index "expenses", ["user_id"], name: "index_expenses_on_user_id"
