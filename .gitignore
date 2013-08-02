@@ -19,3 +19,8 @@
 *.swp
 
 config/config.yml
+Thumbs.db
+.env
+vendor/bundler_gems
+public/assets/
+*.rdb
