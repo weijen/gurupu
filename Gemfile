@@ -35,11 +35,21 @@ gem 'enumerize'
 gem 'bootstrap-datepicker-rails'
 gem 'bootstrap_helper'
 gem "rails-backbone"
-gem "ransack", github: "ernie/ransack", branch: "rails-4"
+
 
 gem 'high_voltage'
 gem "settingslogic"
-#gem 'active_admin', github: "gregbell/active_admin", branch: "rails4"
+
+# for activeadmin
+gem 'devise', "3.0.0"
+gem 'responders',          github: 'plataformatec/responders'
+gem 'inherited_resources', github: 'josevalim/inherited_resources'
+gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
+gem 'activeadmin',         github: 'akashkamboj/active_admin', branch: 'rails4'
+gem 'formtastic',          github: 'justinfrench/formtastic'
+
+# for i18n 
+gem 'rails-i18n', '~> 4.0.0.pre'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
