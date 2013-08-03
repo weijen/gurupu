@@ -1,3 +1,4 @@
+require 'rspec/core'
 RSpec.configure do |config|
 
   config.before(:suite) do
