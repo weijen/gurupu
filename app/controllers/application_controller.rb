@@ -11,7 +11,17 @@ class ApplicationController < ActionController::Base
   end
 
   def login?
-    return !session[:user_id].nil?
+    if session[:user_id] 
+      user = User.find(session[:user_id]) rescue nil
+      if user
+        return true
+      else
+        session[:user_id] = nil
+        return false
+      end
+    else
+      return false
+    end
   end
 
 end

@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: invitations
+#
+#  id        :integer          not null, primary key
+#  sender_id :integer
+#  group_id  :integer
+#  email     :string(255)
+#  slug      :string(255)
+#
+
 class Invitation < ActiveRecord::Base
   include Slugable
   belongs_to :group

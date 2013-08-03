@@ -22,11 +22,9 @@ class Group < ActiveRecord::Base
   has_many :tags, through: :group_tags
   has_many :group_users
   has_many :members, through: :group_users, source: :user
-  has_many :owners, -> { where("group_users.role = 'admin'") },
-           through: :group_users, source: :user
-
+  has_many :owners,  -> { where("group_users.role = 'admin'") },  through: :group_users, source: :user
   STATE = [:active, :frozen, :trashed]
-  enumerize :state, in: STATE, predicates: true
+  enumerize :state, in: STATE, predicates: true, default: :active
 
   def add_owner(user)
     group_users.create(user: user, role: 'admin', state: 'join')
@@ -38,5 +36,15 @@ class Group < ActiveRecord::Base
   def change_state(state)
     self[:state] = state
     self.save    
-  end  
+  end
+
+  def add_owner(user)
+    gu = self.group_users.build(user: user, role: :admin, state: :join)
+    gu.save
+  end
+
+  def add_member(user)
+    gu = self.group_users.build(user: user, role: :member, state: :join)
+    gu.save
+  end
 end

@@ -2,17 +2,17 @@
 #
 # Table name: expenses
 #
-#  id          :integer          not null, primary key
-#  name        :string(255)
-#  cost        :integer
-#  tag_id      :integer
-#  slug        :string(255)
-#  created_at  :datetime
-#  updated_at  :datetime
-#  description :text(255)
-#  date        :datetime
-#  group_id    :integer
-#  user_id     :integer
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  cost       :decimal(18, 2)
+#  tag_id     :integer
+#  slug       :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  date       :date
+#  group_id   :integer
+#  user_id    :integer
+#  state      :string(255)
 #
 
 class Expense < ActiveRecord::Base
@@ -28,5 +28,5 @@ class Expense < ActiveRecord::Base
   scope :active, -> { where state: 'active' }
   
   STATE = [:active, :trashed]
-  enumerize :state, in: STATE, predicates: true
+  enumerize :state, in: STATE, predicates: true, default: :active
 end

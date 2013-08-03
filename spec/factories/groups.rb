@@ -3,6 +3,6 @@
 FactoryGirl.define do
   factory :group do
     sequence(:name){ |n| "團體- #{n}" }
-    description {Faker::Lorem.sentences(5).join("\n\n")}
+    description {Faker::Lorem.sentences(3).join("\n\n")}
   end
 end
